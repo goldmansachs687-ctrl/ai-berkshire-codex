@@ -1,0 +1,10 @@
+{
+  "interface": {
+    "display_name": "AIVA · deep-company-series",
+    "short_description": "Fernando分支：deep-company-series",
+    "default_prompt": "使用 $deep-company-series 按 Fernando 分支流程完成指定研究。"
+  },
+  "policy": {
+    "allow_implicit_invocation": false
+  }
+}

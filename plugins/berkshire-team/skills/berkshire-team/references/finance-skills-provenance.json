@@ -1,0 +1,17 @@
+{
+  "repository": "https://github.com/himself65/finance-skills",
+  "commit": "a0850786e72aa23b92862f9f1635b0de506fe206",
+  "reviewed_at": "2026-11-05",
+  "license": "MIT",
+  "modules": [
+    {
+      "path": "plugins/market-analysis/skills/earnings-recap/SKILL.md",
+      "sha256": "203d09612f1e73a9a259e87235061cbde3a6c817d2561cdf8b1e39ccf86e8192"
+    },
+    {
+      "path": "plugins/market-analysis/skills/estimate-analysis/SKILL.md",
+      "sha256": "dc7f091e7169fa15ca9941f8ff8b6c461f248ad00aec48a757e2b5ff0b5af842"
+    }
+  ],
+  "mode": "Adapted workflows; no upstream auto-install behavior or valuation module imported."
+}

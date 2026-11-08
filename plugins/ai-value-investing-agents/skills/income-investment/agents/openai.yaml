@@ -1,0 +1,10 @@
+{
+  "interface": {
+    "display_name": "AIVA · income-investment",
+    "short_description": "Fernando分支：income-investment",
+    "default_prompt": "使用 $income-investment 按 Fernando 分支流程完成指定研究。"
+  },
+  "policy": {
+    "allow_implicit_invocation": false
+  }
+}

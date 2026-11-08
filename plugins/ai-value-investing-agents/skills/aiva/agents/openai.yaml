@@ -1,0 +1,6 @@
+interface:
+  display_name: "使用 AIVA＋伯克希尔联合研究"
+  short_description: "完整研究默认与定制伯克希尔协作；仍可显式仅用AIVA独立工作流"
+  default_prompt: "使用 $aiva 与原伯克希尔联合研究我指定的公司，使用中文并遵守我的报告顺序；没有公司名时先询问。"
+policy:
+  allow_implicit_invocation: false

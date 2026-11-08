@@ -1,0 +1,109 @@
+# Changelog
+
+All notable changes to **AI Value Investing Agents** are documented in this file.
+
+The project follows [Semantic Versioning](https://semver.org/) for maintained English-edition releases.
+
+## Unreleased
+
+No unreleased changes.
+
+## [1.2.0] — 2026-10-12
+
+### Added
+
+- `era-alpha` as the 21st canonical shared workflow, with synchronized Codex skill and prompt surfaces.
+- Long-horizon terminal-value and IRR audit tooling integrated with the maintained investment-research workflow.
+- Hardened report indexing through `tools/reports_index.py`, generated `reports/README.md`, and machine-readable `reports/index.json`.
+- A full-history, read-only GitHub Actions gate that blocks stale report indexes.
+- An explicit upstream-review record through October 12, 2026 and a selective semantic synchronization policy.
+
+### Changed
+
+- The maintained inventory is now 21 canonical shared workflows, 21 generated Codex shared packages, 21 optional prompts, and one declared Codex-only overlay.
+- Release validation now checks report-index freshness and no longer duplicates a stale hardcoded canonical-workflow count.
+- Curated `reports/examples/` content is classified as `Verified English examples` rather than as a company in generated research navigation.
+- Repository documentation now distinguishes reusable upstream framework synchronization from bulk historical-report mirroring.
+
+### Fixed
+
+- Prevented untracked, ignored, or `git add -N` report drafts from appearing in generated public report indexes.
+- Made report-index generation and regression tests portable across Windows Unicode-console and filesystem behavior.
+- Excluded the verified-example source/calculation register from the report inventory.
+
+## [1.1.0] — 2026-08-02
+
+### Added
+
+- Repository-wide quality gates for links, project identity, private paths, high-confidence secrets, operational language, and workflow inventory.
+- Deterministic cross-platform tests for financial calculations, report auditing, Taiwan-stock transformations, and verified example reports.
+- Three point-in-time verified English research examples under `reports/examples/` with source registers and executable audit fixtures.
+- Unified cross-platform installation management with manifests, backups, dry runs, drift diagnostics, updates, and safe uninstall behavior.
+- Structured issue forms for workflow, financial-data, installation, and workflow-proposal feedback.
+- Support policy, launch feedback triage plan, verified-workflow video script, and public publishing checklist.
+
+### Changed
+
+- Strengthened release publication so repository quality gates, deterministic tests, and the unified installation lifecycle must pass before a tag is created.
+- Updated maintained stable-version references and release documentation for `v1.1.0`.
+
+### Fixed
+
+- Replaced float-based expression evaluation with restricted Decimal arithmetic.
+- Corrected cross-source comparison behavior for negative values and empty source sets.
+- Prevented report audits from passing unverified data or a mismatching single source.
+
+## [1.0.0] — 2026-08-02
+
+### Added
+
+- English canonical versions of all 20 shared investment-research workflows.
+- Twenty generated Codex skill packages and 20 optional slash prompts synchronized from canonical sources.
+- The hand-written Codex-only `investment-memo-craft` report-writing and layout overlay.
+- Cross-platform installers for Claude Code and OpenAI Codex.
+- Permanent GitHub Actions validation on Ubuntu, macOS, and Windows.
+- Automatic semantic-version release publication for approved `Release vX.Y.Z` commits.
+- End-to-end quickstart demonstration in `docs/QUICKSTART_DEMO.md`.
+- Exact-arithmetic and report-audit requirements across decision-sensitive workflows.
+
+### Changed
+
+- Renamed the maintained edition and active checkout path to `ai-value-investing-agents`.
+- Rebuilt the English README, maintenance documentation, and repository identity.
+- Updated `AGENTS.md` and `CLAUDE.md` to remove stale project names, paths, fixed-language requirements, and obsolete operating assumptions.
+- Rewrote `investment-memo-craft` for the maintained English edition and removed its inherited Chinese report template.
+- Converted real-investor style simulations into explicitly labeled framework-based interpretations where appropriate.
+- Strengthened source, attribution, privacy, copyright, current-date, and false-precision controls.
+
+### Compatibility
+
+- Claude Code installs 20 canonical workflows from `skills/*.md`.
+- Codex installs 20 generated shared skill packages plus `investment-memo-craft`.
+- Codex optionally installs 20 generated slash prompts for the shared workflows.
+- Canonical source and generated shared artifacts are validated for one-to-one consistency.
+
+### Migration
+
+Existing users of the original checkout path should clone or rename their local directory to:
+
+```text
+ai-value-investing-agents
+```
+
+Use the maintained repository URL:
+
+```text
+https://github.com/FernandoAbishai/ai-value-investing-agents.git
+```
+
+Historical reports and original-project attribution remain preserved.
+
+### Limitations
+
+- Historical reports are primarily retained in their original language and may contain data that was current only when they were written.
+- Generated research can contain factual or mathematical errors and must be independently verified.
+- The repository does not provide personalized investment, legal, accounting, or tax advice.
+
+## Attribution
+
+This repository is an English-first maintained edition derived from the original [AI Berkshire](https://github.com/xbtlin/ai-berkshire) project created by xbtlin.

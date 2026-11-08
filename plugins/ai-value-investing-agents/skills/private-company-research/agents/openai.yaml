@@ -1,0 +1,10 @@
+{
+  "interface": {
+    "display_name": "AIVA · private-company-research",
+    "short_description": "Fernando分支：private-company-research",
+    "default_prompt": "使用 $private-company-research 按 Fernando 分支流程完成指定研究。"
+  },
+  "policy": {
+    "allow_implicit_invocation": false
+  }
+}

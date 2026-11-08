@@ -1,0 +1,114 @@
+"""Create research checkpoints and detect missing or changed role artifacts."""
+import argparse
+import hashlib
+import json
+from datetime import datetime
+from pathlib import Path
+from uuid import uuid4
+
+ROLES = ('business_analyst', 'financial_analyst', 'industry_researcher', 'risk_assessor', 'independent_review')
+
+
+def digest(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def save(path, data):
+    path = Path(path)
+    temporary = path.with_name(path.name + '.' + uuid4().hex + '.tmp')
+    temporary.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+    temporary.replace(path)
+
+
+def initialize(root, company, symbol, date):
+    datetime.strptime(date, '%Y-%m-%d')
+    slug = ''.join(c for c in company if c.isalnum() or c in '-_')[:60] or 'company'
+    directory = Path(root).resolve() / f'{slug}-{date.replace("-", "")}-{uuid4().hex[:6]}'
+    directory.mkdir(parents=True, exist_ok=False)
+    save(directory / 'run.json', {'schema_version': 1, 'company': company, 'symbol': symbol,
+         'as_of': date, 'phase': 'independent_research', 'next_action': 'Gather primary filings, then independent first passes',
+         'roles': {role: {'status': 'pending', 'attempts': 0, 'artifacts': [], 'note': ''} for role in ROLES}})
+    save(directory / 'evidence.json', {'schema_version': 1, 'required_claims':
+         ['price', 'shares', 'fx', 'revenue', 'parent_profit', 'ocf', 'cash_capex', 'sbc', 'net_cash'],
+         'scope_notes': 'Adapt required IDs to actual decision; explain any non-applicable fields. Never remove unavailable fields merely to pass.',
+         'claims': []})
+    return directory
+
+
+def checkpoint(directory, role, status, files, note, agent_id=None):
+    directory = Path(directory).resolve()
+    state = json.loads((directory / 'run.json').read_text(encoding='utf-8'))
+    record = state['roles'][role]
+    files = list(files)
+    if status == 'complete' and not files:
+        raise ValueError('complete requires an explicit deliverable')
+    if role == 'independent_review' and status == 'complete':
+        if not any((directory / name).resolve() == directory / 'review.md' for name in files):
+            raise ValueError('independent_review requires review.md as an explicit deliverable')
+        # An audit cannot stay current after its report or evidence changes.
+        for name in ('report.md', 'evidence.json'):
+            if name not in files:
+                files.append(name)
+    artifacts = []
+    for name in files:
+        path = (directory / name).resolve()
+        if not path.is_relative_to(directory) or not path.is_file():
+            raise ValueError('artifact must be an existing file inside run directory')
+        artifacts.append({'path': str(path.relative_to(directory)), 'sha256': digest(path)})
+    if status == 'complete' and not artifacts:
+        raise ValueError('complete requires at least one actual deliverable')
+    if status == 'running':
+        record['attempts'] += 1
+    record.update(status=status, note=note)
+    if agent_id:
+        record['agent_id'] = agent_id
+    if artifacts:
+        record['artifacts'] = artifacts
+    save(directory / 'run.json', state)
+    return state
+
+
+def inspect(directory):
+    directory = Path(directory).resolve()
+    state = json.loads((directory / 'run.json').read_text(encoding='utf-8'))
+    for record in state['roles'].values():
+        issues = []
+        for artifact in record['artifacts']:
+            path = (directory / artifact['path']).resolve()
+            if not path.is_relative_to(directory) or not path.is_file():
+                issues.append('missing or outside run: ' + artifact['path'])
+            elif digest(path) != artifact['sha256']:
+                issues.append('changed since checkpoint: ' + artifact['path'])
+        record['integrity_issues'] = issues
+        record['resumable_complete'] = record['status'] == 'complete' and bool(record['artifacts']) and not issues
+    return state
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    commands = parser.add_subparsers(dest='command', required=True)
+    init = commands.add_parser('init')
+    for field in ('root', 'company', 'symbol', 'date'):
+        init.add_argument('--' + field, required=True)
+    update = commands.add_parser('checkpoint')
+    update.add_argument('--run', required=True)
+    update.add_argument('--role', choices=ROLES, required=True)
+    update.add_argument('--status', choices=('pending', 'running', 'complete', 'failed'), required=True)
+    update.add_argument('--file', action='append', default=[])
+    update.add_argument('--note', required=True)
+    update.add_argument('--agent-id')
+    resume = commands.add_parser('resume')
+    resume.add_argument('--run', required=True)
+    args = parser.parse_args()
+    try:
+        if args.command == 'init':
+            print(initialize(args.root, args.company, args.symbol, args.date))
+        else:
+            result = inspect(args.run) if args.command == 'resume' else checkpoint(args.run, args.role, args.status, args.file, args.note, args.agent_id)
+            print(json.dumps(result, ensure_ascii=False, indent=2))
+    except (OSError, ValueError, KeyError) as exc:
+        parser.exit(2, str(exc) + '\n')
+
+
+if __name__ == '__main__':
+    main()

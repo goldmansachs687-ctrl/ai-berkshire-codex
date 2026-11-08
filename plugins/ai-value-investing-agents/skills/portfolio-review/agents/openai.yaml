@@ -1,0 +1,10 @@
+{
+  "interface": {
+    "display_name": "AIVA · portfolio-review",
+    "short_description": "Fernando分支：portfolio-review",
+    "default_prompt": "使用 $portfolio-review 按 Fernando 分支流程完成指定研究。"
+  },
+  "policy": {
+    "allow_implicit_invocation": false
+  }
+}

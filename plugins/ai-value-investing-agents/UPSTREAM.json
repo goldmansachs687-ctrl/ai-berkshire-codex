@@ -1,0 +1,20 @@
+{
+  "repository": "https://github.com/FernandoAbishai/ai-value-investing-agents",
+  "commit": "6afc930045d1888b16660a55c2dc53e08470b815",
+  "version": "1.2.0",
+  "original_codex_skills": 22,
+  "local_changes": [
+    "Plugin manifests",
+    "Explicit-only skill UI metadata",
+    "aiva runtime entrypoint",
+    "Default joint routing in local aiva adapter; upstream workflows unchanged",
+    "Community packaging uses its own marketplace name and public-source fallbacks.",
+    "Omit optional star-chart renderer, bundled font and logo, and authenticated Xueqiu scraper.",
+    "News Pulse uses publicly accessible or expressly authorized sources for investor commentary."
+  ],
+  "upstream_skill_text_modified": true,
+  "local_package_version": "1.2.1",
+  "modified_upstream_skills": [
+    "news-pulse"
+  ]
+}

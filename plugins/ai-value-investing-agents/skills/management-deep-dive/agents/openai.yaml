@@ -1,0 +1,10 @@
+{
+  "interface": {
+    "display_name": "AIVA · management-deep-dive",
+    "short_description": "Fernando分支：management-deep-dive",
+    "default_prompt": "使用 $management-deep-dive 按 Fernando 分支流程完成指定研究。"
+  },
+  "policy": {
+    "allow_implicit_invocation": false
+  }
+}

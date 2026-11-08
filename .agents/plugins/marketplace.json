@@ -1,0 +1,32 @@
+{
+  "name": "berkshire-community",
+  "interface": {
+    "displayName": "AI 伯克希尔 · 社区版"
+  },
+  "plugins": [
+    {
+      "name": "berkshire-team",
+      "source": {
+        "source": "local",
+        "path": "./plugins/berkshire-team"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Finance"
+    },
+    {
+      "name": "ai-value-investing-agents",
+      "source": {
+        "source": "local",
+        "path": "./plugins/ai-value-investing-agents"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Finance"
+    }
+  ]
+}

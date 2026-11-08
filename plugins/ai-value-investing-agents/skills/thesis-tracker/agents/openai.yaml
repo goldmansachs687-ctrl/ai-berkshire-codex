@@ -1,0 +1,10 @@
+{
+  "interface": {
+    "display_name": "AIVA · thesis-tracker",
+    "short_description": "Fernando分支：thesis-tracker",
+    "default_prompt": "使用 $thesis-tracker 按 Fernando 分支流程完成指定研究。"
+  },
+  "policy": {
+    "allow_implicit_invocation": false
+  }
+}

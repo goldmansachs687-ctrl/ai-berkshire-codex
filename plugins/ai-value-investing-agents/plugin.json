@@ -1,0 +1,27 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "ai-value-investing-agents",
+  "version": "1.2.1",
+  "description": "Fernando maintained English-first AI Berkshire workflows, installed separately.",
+  "license": "MIT",
+  "repository": "https://github.com/FernandoAbishai/ai-value-investing-agents",
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "AIVA · Fernando 分支",
+        "shortDescription": "独立安装的价值投资研究英文分支",
+        "longDescription": "FernandoAbishai/ai-value-investing-agents 1.2.0的22个Codex研究工作流与配套工具，另提供一个本地调用入口。保留中文定制版；显式选择本插件后按当前用户的报告语言与结构执行。 完整公司研究默认与已启用的定制伯克希尔协作，共用一支团队与一套底稿；可明确只用AIVA。保留22个上游工作流，公开版的调整见UPSTREAM.json，中文及用户报告顺序优先。",
+        "category": "Finance",
+        "capabilities": [
+          "Research",
+          "Analysis",
+          "File generation"
+        ],
+        "defaultPrompt": [
+          "使用 $aiva 与原伯克希尔联合研究我指定的公司，使用中文并遵守我的报告顺序；没有公司名时先询问。"
+        ]
+      },
+      "requires_local_executor": true
+    }
+  }
+}

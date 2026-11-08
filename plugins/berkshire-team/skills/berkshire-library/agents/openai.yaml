@@ -1,0 +1,6 @@
+interface:
+  display_name: "加入投资资料库"
+  short_description: "登记书籍、股东信与个人笔记，保留出处、阅读范围和研究原则"
+  default_prompt: "使用 $berkshire-library 将我提供的投资资料加入伯克希尔资料库。"
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,10 @@
+{
+  "interface": {
+    "display_name": "AIVA · wechat-article",
+    "short_description": "Fernando分支：wechat-article",
+    "default_prompt": "使用 $wechat-article 按 Fernando 分支流程完成指定研究。"
+  },
+  "policy": {
+    "allow_implicit_invocation": false
+  }
+}

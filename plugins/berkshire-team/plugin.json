@@ -1,0 +1,28 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "berkshire-team",
+  "version": "2.2.5",
+  "description": "AI Berkshire：公司信息与发展历史、四角色投研、美股财报与盈利预期。",
+  "license": "MIT",
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "AI 伯克希尔 · 完整投研团队",
+        "shortDescription": "四角色研究、证据核验与投资资料库",
+        "longDescription": "四角色独立研究与复核，接入AKShare和EdgarTools。将明确阅读的投资书籍、股东信与问答转为带出处和边界的研究规则；主动找资料后交付阅读与规则更新反馈。私人原文保存在工作区。 按需补充美股财报复盘与盈利预期变化，区分官方事实、市场共识与研究假设。 公司信息通过现有联网工具直接读取Wiki与公开财务资料，无需额外安装Wiki或券商插件。 已连接长桥时优先复用公司资料、行情及多年财务，保留原始结果和字段定位；不默认读取账户信息。 完整公司研究默认联合已启用AIVA的分析与表达标准；共用一支团队与一套底稿，保留用户报告顺序、十年财务、长桥取数、知识和严格核验。 估值阶段链接company-valuation与现有FinanceToolkit计算；按需调用Public Equity建模/审计，Investment Banking用于明确交易专项，保留共用证据与模型，不机械混合估值。",
+        "category": "Finance",
+        "capabilities": [
+          "Research",
+          "Analysis",
+          "File generation"
+        ],
+        "defaultPrompt": [
+          "使用 $berkshire-team 以伯克希尔＋AIVA联合模式研究我指定的公司，估值阶段按需调用已链接工具并遵守我的报告顺序；没有公司名时先询问。"
+        ],
+        "logo": "./assets/berkshire.svg",
+        "composerIcon": "./assets/berkshire.svg"
+      },
+      "requires_local_executor": true
+    }
+  }
+}

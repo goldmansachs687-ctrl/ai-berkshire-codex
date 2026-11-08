@@ -1,0 +1,10 @@
+{
+  "interface": {
+    "display_name": "AIVA · investment-research",
+    "short_description": "Fernando分支：investment-research",
+    "default_prompt": "使用 $investment-research 按 Fernando 分支流程完成指定研究。"
+  },
+  "policy": {
+    "allow_implicit_invocation": false
+  }
+}

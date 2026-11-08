@@ -1,0 +1,6 @@
+interface:
+  display_name: "启动伯克希尔＋AIVA联合研究"
+  short_description: "保留定制取数与核验，联合AIVA分析及表达标准，按需链接估值工具，共用一个四角色团队"
+  default_prompt: "使用 $berkshire-team 以伯克希尔＋AIVA联合模式研究我指定的公司，遵守我的报告顺序；未给公司名时先询问。"
+policy:
+  allow_implicit_invocation: true
