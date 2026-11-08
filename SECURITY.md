@@ -1,4 +1,12 @@
-# 安全问题报告
+# Security Policy / 安全问题报告
+
+## English
+
+Report vulnerabilities privately through **Security → Report a vulnerability** in this GitHub repository. Include the affected version, files and reproduction steps. Use a minimal example with sensitive data removed. Use Issues for ordinary feature and usage questions.
+
+The project runs within your Codex environment and its permissions. Review new dependencies and connector permissions. Before publishing changes, check files and commit history for credentials, personal research materials and machine-specific configuration.
+
+## 简体中文
 
 请通过仓库的 **Security → Report a vulnerability** 私密提交安全问题。注明涉及的版本、文件和复现条件，只提供经过脱敏的最小样例。普通功能问题可以用 Issues。
 
