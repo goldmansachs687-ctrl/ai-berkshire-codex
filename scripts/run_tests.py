@@ -8,6 +8,7 @@ import sys
 import unittest
 
 ROOT=Path(__file__).resolve().parents[1]
+REQUIRED_SUITES = ('tests', 'plugins/berkshire-team/tests')
 
 
 def main():
@@ -18,7 +19,13 @@ def main():
                      failures=len(result.failures),errors=len(result.errors),skipped=len(result.skipped),expected_failures=len(result.expectedFailures),unexpected_successes=len(result.unexpectedSuccesses))
         print('TEST_SUMMARY '+json.dumps(summary),flush=True)
         return 0 if result.wasSuccessful() and result.testsRun and not (result.skipped or result.expectedFailures) else 1
-    suites=[ROOT/'tests',*sorted((ROOT/'plugins').glob('*/tests'))]
+    required = [ROOT / name for name in REQUIRED_SUITES]
+    missing = [str(path.relative_to(ROOT)) for path in required if not path.is_dir()]
+    if missing:
+        print('Missing required test suites: ' + ', '.join(missing), file=sys.stderr)
+        return 1
+    extra = sorted(path for path in (ROOT / 'plugins').glob('*/tests') if path not in required)
+    suites = required + extra
     codes=[]
     for suite in suites:
         codes.append(subprocess.run([sys.executable,str(Path(__file__).resolve()),'--suite',str(suite.relative_to(ROOT))],cwd=ROOT).returncode)

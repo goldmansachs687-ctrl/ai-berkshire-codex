@@ -29,21 +29,35 @@ def fingerprint(value):
                                     separators=(',', ':')).encode()).hexdigest()
 
 
-def read_file(root, name):
+def dependency_name(root, name):
+    """Normalize a run-relative reference without traversing symlinks or leaving the run."""
     if not isinstance(name, str) or not name.strip():
         raise ValueError('file path must be a nonempty string')
-    path = root / name
-    if Path(name).is_absolute() or '..' in Path(name).parts:
+    reference = Path(name)
+    if reference.is_absolute():
         raise ValueError('path must stay inside run: ' + name)
-    if any(p.is_symlink() for p in [path, *path.parents] if p != root.parent):
-        raise ValueError('symlink dependency forbidden: ' + name)
-    if not path.resolve().is_relative_to(root) or not path.is_file():
+    path = root
+    for part in reference.parts:
+        if part == '..':
+            if path == root:
+                raise ValueError('path must stay inside run: ' + name)
+            path = path.parent
+        else:
+            path = path / part
+            if path.is_symlink():
+                raise ValueError('symlink dependency forbidden: ' + name)
+    return path.relative_to(root).as_posix()
+
+
+def read_file(root, name):
+    path = root / dependency_name(root, name)
+    if not path.is_file():
         raise ValueError('missing or outside run: ' + name)
     data = path.read_bytes()
     if not data.strip():
         raise ValueError('empty file: ' + name)
     suffix = path.suffix.lower()
-    if suffix not in {'.json', '.md', '.txt', '.py', '.csv'}:
+    if suffix not in {'.json', '.md', '.txt', '.py', '.csv', '.html', '.htm'}:
         raise ValueError('unsupported dependency format (export a reviewable text artifact): ' + name)
     try:
         text = data.decode('utf-8')
@@ -112,8 +126,7 @@ def binding(root, state):
             names.update(strings(manifest.get(key), 'valuation.' + key))
     result = {}
     while names:
-        name = names.pop()
-        name = Path(name).as_posix()
+        name = dependency_name(root, names.pop())
         if name in RESERVED:
             raise ValueError('mutable state/output cannot be a dependency: ' + name)
         if name in result:
@@ -131,22 +144,28 @@ def binding(root, state):
                 if parts.scheme in ('http', 'https'):
                     if not parts.netloc:
                         raise ValueError('invalid remote link: ' + link)
-                elif parts.scheme:
+                elif parts.scheme or parts.netloc:
                     raise ValueError('unsupported link scheme: ' + link)
                 elif parts.path:
-                    names.add(str(Path(name).parent / unquote(parts.path)))
+                    target = Path(unquote(parts.path))
+                    names.add(str(Path(name).parent / target))
         if name == 'evidence.json':
             for claim in parsed['claims']:
                 for observation in claim.get('observations', []):
                     source = observation.get('source', '')
                     if not isinstance(source, str):
                         raise ValueError('evidence source must be a string')
-                    source_url = urlsplit(source)
-                    if source_url.scheme in ('http', 'https') and (not source_url.netloc or any(c.isspace() for c in source)):
-                        raise ValueError('invalid source URL: ' + source)
-                    if source and not source_url.scheme and Path(source).suffix.lower() in {'.json', '.md', '.txt', '.csv', '.py', '.pdf', '.xlsx', '.xls', '.docx'}:
-                        names.add(source)
                     local_source = observation.get('local_file')
+                    source_url = urlsplit(source)
+                    if source_url.scheme in ('http', 'https'):
+                        if not source_url.hostname or any(c.isspace() for c in source):
+                            raise ValueError('invalid source URL: ' + source)
+                    elif source_url.scheme or source_url.netloc:
+                        raise ValueError('unsupported source URL: ' + source)
+                    elif source:
+                        names.add(source)
+                        if not local_source:
+                            local_source = source
                     if local_source and observation.get('source_sha256'):
                         local_bytes = read_file(root, local_source)[0]
                         if hashlib.sha256(local_bytes).hexdigest() != observation['source_sha256'].lower():

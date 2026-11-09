@@ -5,13 +5,25 @@ import re
 from pathlib import Path
 from evidence_gate import audit
 from research_run import ROLES, inspect
-from delivery_dependencies import binding, read_file, strict_json, strings
+from delivery_dependencies import binding, dependency_name, read_file, strict_json, strings
 from delivery_model import check_model
 
 EXIT_CODES = {'COMPLETE': 0, 'LIMITED': 2, 'BLOCKED': 1}
 BOUNDARY = ('Reviewer IDs do not prove independent thinking; files do not prove adequate counterevidence; '
             'valid evidence metadata does not prove source authenticity or correct interpretation. '
             'Scope completeness and economic assumptions require human/AI judgment.')
+# Match an amount attached to a valuation label, including Markdown cells and
+# split headings. Do not scan ahead through unrelated text for any number.
+VALUATION_AMOUNT = re.compile(
+    r'(?:\b(?:DCF|SOTP|fair value|price target|intrinsic value)\b|目标价(?:格)?|(?:内在|合理)价值|估值(?:区间|结果)?)'
+    r'(?:[\s|*_:：=#`–—-]|\b(?:of|is|at|per share)\b|每股|约为|为|是|约|达)*'
+    r'(?:[$￥¥€£]|\b(?:USD|HKD|CNY)\b)?\s*\d+(?:[,.]\d+)*(?![\d,.]|\s*(?:财?年))',
+    re.IGNORECASE,
+)
+
+
+def has_text(value):
+    return isinstance(value, str) and bool(value.strip())
 
 
 def accept(directory):
@@ -90,26 +102,25 @@ def accept(directory):
         questions = challenge.get('questions')
         if not isinstance(questions, list) or not questions:
             raise ValueError('question/response records required')
+        bound_paths = {item['path'] for item in dependencies}
         for question in questions:
-            if not question.get('question') or not question.get('response'):
+            if not has_text(question.get('question')) or not has_text(question.get('response')):
                 raise ValueError('each challenge needs question and response')
             for name in strings(question.get('evidence'), 'challenge evidence'):
-                read_file(root, name)
-                if name not in {d['path'] for d in dependencies}:
+                if dependency_name(root, name) not in bound_paths:
                     raise ValueError('challenge evidence must be listed in dependencies: ' + name)
         disputes = challenge.get('disagreements')
         if not isinstance(disputes, list):
             raise ValueError('disagreements must be an explicit list')
-        if not disputes and not challenge.get('no_material_disagreements_reason'):
+        if not disputes and not has_text(challenge.get('no_material_disagreements_reason')):
             raise ValueError('record why no material disagreement remains')
         for dispute in disputes:
             if type(dispute.get('material')) is not bool:
                 raise ValueError('each disagreement must declare materiality')
-            if dispute.get('status') != 'resolved' or not dispute.get('resolution'):
+            if dispute.get('status') != 'resolved' or not has_text(dispute.get('resolution')):
                 raise ValueError('unresolved disagreement: ' + str(dispute.get('question', 'unspecified')))
             for name in strings(dispute.get('evidence'), 'resolution evidence'):
-                read_file(root, name)
-                if name not in {d['path'] for d in dependencies}:
+                if dependency_name(root, name) not in bound_paths:
                     raise ValueError('resolution evidence must be listed in dependencies: ' + name)
     except (OSError, ValueError, TypeError, KeyError, AttributeError) as exc:
         issue('challenges', contract.get('challenges', 'delivery.json'), exc, 'Record challenges, answers, material disagreements and supported reconciliation; link evidence in dependencies.')
@@ -143,6 +154,8 @@ def accept(directory):
                 raise ValueError('gap must remain an explicitly unknown fact')
             if gap.get('reason') != 'objective_unavailable':
                 raise ValueError('only objective unavailability can permit limited delivery')
+            if any(obs.get('value') is not None for obs in claim.get('observations', [])):
+                raise ValueError(f'{identifier}: source values already exist; reconcile them before delivery')
             strings(gap.get('attempted_sources'), 'attempted_sources')
             for field in ('impact', 'prohibited_conclusions', 'disclosure'):
                 if not isinstance(gap.get(field), str) or not gap[field].strip() or gap[field] not in report:
@@ -165,7 +178,7 @@ def accept(directory):
             if not valuation.get('reason'):
                 raise ValueError('explain why this report makes no quantitative valuation conclusion')
             report_text = read_file(root, 'report.md')[1]
-            if re.search(r'(?:DCF|SOTP|估值|目标价|内在价值|合理价值|fair value|price target|intrinsic value)[^\n]{0,100}(?:[0-9]|[$￥¥])', report_text, re.I):
+            if VALUATION_AMOUNT.search(report_text):
                 raise ValueError('valuation language with a number requires a model; qualitative scope declaration is insufficient')
             if valuation.get('manifest'):
                 raise ValueError('a declared valuation manifest requires valuation.required=true')

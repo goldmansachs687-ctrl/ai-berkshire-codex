@@ -51,6 +51,12 @@ class ConfigurationCLI(unittest.TestCase):
         p=self.root/'skip_fixture';p.mkdir();(p/'test_skip.py').write_text('import unittest\nclass Skip(unittest.TestCase):\n @unittest.skip("intentional fixture")\n def test_skip(self): pass\n')
         result=subprocess.run([sys.executable,str(self.root/'scripts/run_tests.py'),'--suite','skip_fixture'],capture_output=True,text=True)
         self.assertEqual(result.returncode,1);self.assertIn('"skipped": 1',result.stdout)
+    def test_runner_rejects_missing_original_suite(self):
+        shutil.rmtree(self.root/'plugins/berkshire-team/tests')
+        result = subprocess.run([sys.executable, str(self.root/'scripts/run_tests.py')],
+                                capture_output=True, text=True)
+        self.assertEqual(result.returncode, 1, result.stdout)
+        self.assertIn('Missing required test suites: plugins/berkshire-team/tests', result.stderr)
     def test_workflow_push_pull_request_no_ignored_failure(self):
         # BaseLoader keeps GitHub's YAML 1.2 `on` key as a string.
         import yaml

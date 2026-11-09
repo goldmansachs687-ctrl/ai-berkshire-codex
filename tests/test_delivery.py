@@ -141,8 +141,94 @@ class DeliveryCLI(unittest.TestCase):
 
     def test_qualitative_scope_cannot_hide_numeric_valuation(self):
         root=example(self.temp.name,'qualitative')
-        (root/'report.md').write_text('Synthetic fair value 100 USD. [Source](source.md)\n')
-        review(root);self.run_gate('BLOCKED',root)
+        for report in ('Synthetic fair value 100 USD. [Source](source.md)\n',
+                       '目标价\n每股 500 美元。\n',
+                       '| **目标价** | $500 |\n'):
+            with self.subTest(report=report):
+                (root/'report.md').write_text(report, encoding='utf-8')
+                review(root)
+                data = self.run_gate('BLOCKED', root)
+                self.assertTrue(any(i['check'] == 'model' for i in data['issues']))
+
+    def test_valuation_disclaimer_with_historical_figures_is_qualitative(self):
+        root = example(self.temp.name, 'qualitative')
+        (root/'report.md').write_text('本简报不提供估值；2025 年现金收益为 50 百万美元。\n', encoding='utf-8')
+        review(root)
+        self.run_gate('COMPLETE', root)
+
+    def test_null_claim_with_conflicting_observations_is_not_an_objective_gap(self):
+        root = example(self.temp.name, 'limited')
+        ledger = load(root, 'evidence.json')
+        history = next(c for c in ledger['claims'] if c['id'] == 'history')
+        observation = ledger['claims'][0]['observations'][0]
+        history['observations'] = [dict(observation, value=80, source='https://example.org/first'),
+                                   dict(observation, value=160, source='https://example.org/second')]
+        history['reported_value'] = 80
+        save(root, 'evidence.json', ledger)
+        review(root)
+        self.assertEqual(self.run_gate('BLOCKED', root)['evidence_gate']['verdict'], 'FAIL')
+        history['reported_value'] = None
+        save(root, 'evidence.json', ledger)
+        review(root)
+        data = self.run_gate('BLOCKED', root)
+        self.assertEqual(data['evidence_gate']['verdict'], 'INCOMPLETE')
+        self.assertTrue(any('history: source values already exist' in i['reason'] for i in data['issues']))
+
+    def test_blank_and_non_text_challenge_records_block(self):
+        challenge = load(self.root, 'challenges.json')
+        for record in (dict(question=' \t ', response='\n '), dict(question=True, response=42)):
+            with self.subTest(record=record):
+                challenge['questions'][0].update(record)
+                save(self.root, 'challenges.json', challenge)
+                review(self.root)
+                data = self.run_gate('BLOCKED')
+                self.assertTrue(any(i['check'] == 'challenges' for i in data['issues']))
+
+    def test_html_source_is_bound_and_change_or_deletion_blocks(self):
+        source = self.root/'filing.html'
+        source.write_text('<html><p>Revenue 100</p></html>', encoding='utf-8')
+        ledger = load(self.root, 'evidence.json')
+        ledger['claims'][0]['observations'][0]['source'] = source.name
+        save(self.root, 'evidence.json', ledger)
+        review(self.root)
+        data = self.run_gate('COMPLETE')
+        self.assertIn(source.name, {dep['path'] for dep in data['dependencies']})
+        source.write_text('<html><p>Revenue 50</p></html>', encoding='utf-8')
+        self.run_gate('BLOCKED')
+        source.unlink()
+        self.run_gate('BLOCKED')
+
+    def test_unrecognized_local_source_is_not_silently_ignored(self):
+        source = self.root/'filing.unknown'
+        source.write_text('Revenue 100', encoding='utf-8')
+        ledger = load(self.root, 'evidence.json')
+        ledger['claims'][0]['observations'][0]['source'] = source.name
+        save(self.root, 'evidence.json', ledger)
+        data = self.run_gate('BLOCKED')
+        self.assertTrue(any('unsupported dependency format' in i['reason'] for i in data['issues']))
+
+    def test_resolved_challenge_can_link_to_parent_inside_run(self):
+        notes = self.root/'notes'
+        notes.mkdir()
+        reconciliation = notes/'reconciliation.md'
+        reconciliation.write_text('Reconciled period and units. [Original](../source.md)\n', encoding='utf-8')
+        challenge = load(self.root, 'challenges.json')
+        challenge['disagreements'] = [dict(material=True, status='resolved', resolution='Same reporting period.',
+                                           evidence=['notes/reconciliation.md'])]
+        save(self.root, 'challenges.json', challenge)
+        review(self.root)
+        data = self.run_gate('COMPLETE')
+        paths = {dep['path'] for dep in data['dependencies']}
+        self.assertIn('source.md', paths)
+        self.assertFalse(any('..' in Path(path).parts for path in paths))
+        for target, reason in (('../../source.md', 'path must stay inside run'),
+                               ('alias/../../source.md', 'symlink dependency forbidden')):
+            with self.subTest(target=target):
+                if target.startswith('alias'):
+                    (notes/'alias').symlink_to(self.root, target_is_directory=True)
+                reconciliation.write_text(f'[Original]({target})\n', encoding='utf-8')
+                blocked = self.run_gate('BLOCKED')
+                self.assertTrue(any(reason in i['reason'] for i in blocked['issues']))
 
     def test_missing_key_input_and_invalid_pointer_block(self):
         original=(self.root/'valuation.json').read_bytes()
