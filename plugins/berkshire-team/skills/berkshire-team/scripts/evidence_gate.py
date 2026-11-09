@@ -1,6 +1,7 @@
 """Validate an explicit evidence ledger; never infer full coverage from Markdown."""
 import argparse
 import json
+import re
 from audit_core import evaluate
 
 
@@ -27,7 +28,8 @@ def audit(ledger):
             if not isinstance(observations, list) or len(observations) > 2:
                 raise ValueError('observations must be an array with at most two normalized records')
             # Do not accept legacy fetched_* fields as a bypass of source metadata.
-            for key in ('fetched_value', 'fetched_value2', 'fetched_source', 'fetched_source2', 'origin_group', 'origin_group2'):
+            for key in ('fetched_value', 'fetched_value2', 'fetched_source', 'fetched_source2',
+                        'origin_group', 'origin_group2', 'fetched_source_sha256', 'fetched_source_sha2562'):
                 row.pop(key, None)
             for index, obs in enumerate(observations):
                 if not isinstance(obs, dict):
@@ -44,6 +46,12 @@ def audit(ledger):
                 row['fetched_value' + suffix] = obs.get('value')
                 row['fetched_source' + suffix] = obs.get('source')
                 row['origin_group' + suffix] = obs.get('origin_group')
+                if 'source_sha256' in obs:
+                    digest = obs['source_sha256']
+                    if not isinstance(digest, str) or not re.fullmatch('[0-9a-fA-F]{64}', digest):
+                        missing.append({'id': claim.get('id'), 'reason': 'invalid source_sha256'})
+                    else:
+                        row['fetched_source_sha256' + suffix] = digest
         rows.append(row)
     result = evaluate(rows, required)
     result['incomplete_items'].extend(missing)

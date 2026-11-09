@@ -1,5 +1,6 @@
 """Fail-closed numeric checks. This verifies supplied evidence, not its authenticity."""
 from decimal import Decimal, InvalidOperation
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 
 def number(value):
@@ -12,6 +13,35 @@ def number(value):
     if not result.is_finite():
         raise ValueError('non-finite numeric value')
     return result
+
+
+def source_identity(source):
+    source = source.strip()
+    try:
+        url = urlsplit(source)
+    except ValueError:
+        return source
+    if url.scheme not in ('http', 'https') or not url.netloc:
+        return source
+    query = [(key, value) for key, value in parse_qsl(url.query, keep_blank_values=True)
+             if not key.lower().startswith('utm_')]
+    return urlunsplit(('', url.netloc.lower(), url.path, urlencode(query), ''))
+
+
+def independent_evidence(row, evidence):
+    if len(evidence) < 2:
+        return False
+    groups = [row.get('origin_group' + suffix) for suffix in ('', '2')]
+    if any(not isinstance(group, str) or not group.strip() for group in groups):
+        return False
+    if groups[0].strip().casefold() == groups[1].strip().casefold():
+        return False
+    if source_identity(evidence[0]['source']) == source_identity(evidence[1]['source']):
+        return False
+    first = row.get('fetched_source_sha256')
+    second = row.get('fetched_source_sha2562')
+    return not (isinstance(first, str) and first and isinstance(second, str)
+                and first.lower() == second.lower())
 
 
 def evaluate(results, required_ids=None):
@@ -77,12 +107,11 @@ def evaluate(results, required_ids=None):
             missing.append(dict(item, reason='no fetched value'))
         elif not all(e['matches'] for e in evidence):
             failed.append(dict(item, reason='source discrepancy requires reconciliation', evidence=evidence))
-        elif row.get('require_second_source') and len(evidence) < 2:
-            missing.append(dict(item, reason='required second source unavailable'))
-        elif row.get('require_independent_sources') and (
-            len(evidence) < 2 or not row.get('origin_group') or not row.get('origin_group2')
-            or row['origin_group'] == row['origin_group2']
+        elif row.get('require_second_source') and (
+            len(evidence) < 2 or source_identity(evidence[0]['source']) == source_identity(evidence[1]['source'])
         ):
+            missing.append(dict(item, reason='required second source unavailable'))
+        elif row.get('require_independent_sources') and not independent_evidence(row, evidence):
             missing.append(dict(item, reason='independent source lineage not established'))
         else:
             passed.append(dict(item, evidence=evidence))

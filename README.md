@@ -4,7 +4,9 @@
 
 ## English
 
-AI Berkshire is a value-investing research toolkit for Codex environments that support local plugins. It brings together **Berkshire Team 2.2.5**, which organizes company research and checks its evidence, and **AI Value Investing Agents (AIVA) 1.2.1**, which adds analytical and writing guidance. Berkshire Library helps index and search materials in a workspace you choose.
+AI Berkshire is a value-investing research toolkit for Codex environments that support local plugins. It brings together **Berkshire Team 2.2.6**, which organizes company research and checks its evidence, and **AI Value Investing Agents (AIVA) 1.2.1**, which adds analytical and writing guidance. Berkshire Library helps index and search materials in a workspace you choose.
+
+**What changed in 2.2.6.** The research report now uses one six-part template. The evidence check rejects repeat copies of the same source when independent sources are required. An independent review can only be marked complete with a review write-up and a reviewer ID.
 
 ### How the research works
 
@@ -41,7 +43,9 @@ This is a community edition derived from [AI Berkshire](https://github.com/xbtli
 
 ## 简体中文
 
-AI 伯克希尔是一套面向支持本地插件的 Codex 环境的价值投资研究工具。**伯克希尔团队 2.2.5** 负责组织公司研究和核对证据，**AI Value Investing Agents（AIVA）1.2.1** 补充分析和写作方法。伯克希尔资料库可在你指定的工作区登记和检索材料。
+AI 伯克希尔是一套面向支持本地插件的 Codex 环境的价值投资研究工具。**伯克希尔团队 2.2.6** 负责组织公司研究和核对证据，**AI Value Investing Agents（AIVA）1.2.1** 补充分析和写作方法。伯克希尔资料库可在你指定的工作区登记和检索材料。
+
+**2.2.6 更新。** 报告统一为六部分模板。要求独立双源时，同一来源的重复记录不会通过。独立复核必须有正文和复核者身份才能标记完成。
 
 ### 研究怎么做
 

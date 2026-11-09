@@ -80,6 +80,14 @@ class AuditTests(unittest.TestCase):
         row['origin_group2'] = 'independent-origin'
         self.assertEqual(evaluate([row])['verdict'], 'PASS')
 
+    def test_same_source_url_cannot_count_twice(self):
+        row = fact(fetched_source='https://example.org/filing#sales',
+                   fetched_value2=100, fetched_source2='https://EXAMPLE.org/filing?utm_source=copy#income',
+                   origin_group='issuer', origin_group2='another-label')
+        for flag in ('require_independent_sources', 'require_second_source'):
+            with self.subTest(flag=flag):
+                self.assertEqual(evaluate([dict(row, **{flag: True})])['verdict'], 'INCOMPLETE')
+
     def test_cli_exit_codes_and_json(self):
         for records, code in [([], 2), ([fact()], 0), ([fact(fetched_value=80)], 1)]:
             result = subprocess.run([sys.executable, str(SCRIPTS/'report_audit.py'), 'verdict', '--results', json.dumps(records), '--output-json'], capture_output=True, text=True)
@@ -115,6 +123,18 @@ class EvidenceTests(unittest.TestCase):
         data = self.ledger(); data['claims'][0]['kind'] = 'derived'
         self.assertEqual(audit(data)['verdict'], 'INCOMPLETE')
 
+    def test_document_hash_flags_mirror_with_different_origin_label(self):
+        data = self.ledger()
+        claim = data['claims'][0]
+        claim['require_independent_sources'] = True
+        original = claim['observations'][0]
+        original['source_sha256'] = 'a' * 64
+        mirror = dict(original, source='mirror.pdf', origin_group='another-label')
+        claim['observations'].append(mirror)
+        self.assertEqual(audit(data)['verdict'], 'INCOMPLETE')
+        mirror['source_sha256'] = 'b' * 64
+        self.assertEqual(audit(data)['verdict'], 'PASS')
+
 
 class WorkflowTests(unittest.TestCase):
     def test_run_no_overwrite_and_artifact_integrity(self):
@@ -138,9 +158,36 @@ class WorkflowTests(unittest.TestCase):
             with self.assertRaises(ValueError): checkpoint(run, 'independent_review', 'complete', [], 'not done')
             with self.assertRaises(ValueError): checkpoint(run, 'independent_review', 'complete', ['report.md'], 'not done')
             (run/'review.md').write_text('review')
-            checkpoint(run, 'independent_review', 'complete', ['review.md'], 'done')
+            checkpoint(run, 'independent_review', 'complete', ['review.md'], 'done', 'reviewer-agent')
             self.assertTrue(inspect(run)['roles']['independent_review']['resumable_complete'])
             (run/'evidence.json').write_text('{}')
+            self.assertFalse(inspect(run)['roles']['independent_review']['resumable_complete'])
+
+    def test_review_rejects_empty_missing_id_and_reused_researcher(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            run = initialize(temporary, 'A', 'A', '2026-10-28')
+            (run/'report.md').write_text('report')
+            (run/'review.md').write_text('   \n')
+            with self.assertRaisesRegex(ValueError, 'empty review artifact'):
+                checkpoint(run, 'independent_review', 'complete', ['review.md'], 'done', 'reviewer-agent')
+            (run/'review.md').write_text('review')
+            with self.assertRaisesRegex(ValueError, 'reviewer agent ID'):
+                checkpoint(run, 'independent_review', 'complete', ['review.md'], 'done')
+            (run/'business.md').write_text('business research')
+            checkpoint(run, 'business_analyst', 'complete', ['business.md'], 'done', 'researcher-agent')
+            with self.assertRaisesRegex(ValueError, 'must not be one of'):
+                checkpoint(run, 'independent_review', 'complete', ['review.md'], 'done', 'researcher-agent')
+            self.assertEqual(inspect(run)['roles']['independent_review']['status'], 'pending')
+
+    def test_legacy_review_without_reviewer_is_not_resumable(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            run = initialize(temporary, 'A', 'A', '2026-10-28')
+            (run/'report.md').write_text('report')
+            (run/'review.md').write_text('review')
+            checkpoint(run, 'independent_review', 'complete', ['review.md'], 'done', 'reviewer-agent')
+            state = json.loads((run/'run.json').read_text())
+            del state['roles']['independent_review']['agent_id']
+            (run/'run.json').write_text(json.dumps(state))
             self.assertFalse(inspect(run)['roles']['independent_review']['resumable_complete'])
 
     def test_outside_artifact_rejected(self):

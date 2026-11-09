@@ -1,6 +1,6 @@
 {
   "name": "berkshire-team",
-  "version": "2.2.5",
+  "version": "2.2.6",
   "description": "AI Berkshire：公司信息与发展历史、四角色投研、美股财报与盈利预期。",
   "license": "MIT",
   "skills": "./skills/",

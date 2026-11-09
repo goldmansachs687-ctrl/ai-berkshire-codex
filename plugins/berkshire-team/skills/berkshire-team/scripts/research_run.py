@@ -7,6 +7,7 @@ from pathlib import Path
 from uuid import uuid4
 
 ROLES = ('business_analyst', 'financial_analyst', 'industry_researcher', 'risk_assessor', 'independent_review')
+REVIEW_ARTIFACTS = ('review.md', 'report.md', 'evidence.json')
 
 
 def digest(path):
@@ -35,6 +36,31 @@ def initialize(root, company, symbol, date):
     return directory
 
 
+def review_issues(directory, roles, agent_id, artifact_names):
+    issues = []
+    reviewer = agent_id.strip() if isinstance(agent_id, str) else ''
+    if not reviewer:
+        issues.append('independent_review requires the actual reviewer agent ID')
+    elif any(reviewer == str(record.get('agent_id', '')).strip()
+             for role, record in roles.items() if role != 'independent_review'):
+        issues.append('independent reviewer must not be one of the recorded research agents')
+    for name in REVIEW_ARTIFACTS:
+        if name not in artifact_names:
+            issues.append('independent_review must record ' + name)
+            continue
+        if name in ('review.md', 'report.md'):
+            path = directory / name
+            if not path.resolve().is_relative_to(directory) or not path.is_file():
+                issues.append('missing or outside run: ' + name)
+            else:
+                try:
+                    if not path.read_text(encoding='utf-8').strip():
+                        issues.append('empty review artifact: ' + name)
+                except (OSError, UnicodeError):
+                    issues.append('unreadable review artifact: ' + name)
+    return issues
+
+
 def checkpoint(directory, role, status, files, note, agent_id=None):
     directory = Path(directory).resolve()
     state = json.loads((directory / 'run.json').read_text(encoding='utf-8'))
@@ -46,7 +72,7 @@ def checkpoint(directory, role, status, files, note, agent_id=None):
         if not any((directory / name).resolve() == directory / 'review.md' for name in files):
             raise ValueError('independent_review requires review.md as an explicit deliverable')
         # An audit cannot stay current after its report or evidence changes.
-        for name in ('report.md', 'evidence.json'):
+        for name in REVIEW_ARTIFACTS[1:]:
             if name not in files:
                 files.append(name)
     artifacts = []
@@ -57,11 +83,16 @@ def checkpoint(directory, role, status, files, note, agent_id=None):
         artifacts.append({'path': str(path.relative_to(directory)), 'sha256': digest(path)})
     if status == 'complete' and not artifacts:
         raise ValueError('complete requires at least one actual deliverable')
+    if role == 'independent_review' and status == 'complete':
+        issues = review_issues(directory, state['roles'], agent_id,
+                               {artifact['path'] for artifact in artifacts})
+        if issues:
+            raise ValueError('; '.join(issues))
     if status == 'running':
         record['attempts'] += 1
     record.update(status=status, note=note)
-    if agent_id:
-        record['agent_id'] = agent_id
+    if isinstance(agent_id, str) and agent_id.strip():
+        record['agent_id'] = agent_id.strip()
     if artifacts:
         record['artifacts'] = artifacts
     save(directory / 'run.json', state)
@@ -71,7 +102,7 @@ def checkpoint(directory, role, status, files, note, agent_id=None):
 def inspect(directory):
     directory = Path(directory).resolve()
     state = json.loads((directory / 'run.json').read_text(encoding='utf-8'))
-    for record in state['roles'].values():
+    for role, record in state['roles'].items():
         issues = []
         for artifact in record['artifacts']:
             path = (directory / artifact['path']).resolve()
@@ -79,6 +110,9 @@ def inspect(directory):
                 issues.append('missing or outside run: ' + artifact['path'])
             elif digest(path) != artifact['sha256']:
                 issues.append('changed since checkpoint: ' + artifact['path'])
+        if role == 'independent_review' and record['status'] == 'complete':
+            issues.extend(review_issues(directory, state['roles'], record.get('agent_id'),
+                                       {artifact['path'] for artifact in record['artifacts']}))
         record['integrity_issues'] = issues
         record['resumable_complete'] = record['status'] == 'complete' and bool(record['artifacts']) and not issues
     return state

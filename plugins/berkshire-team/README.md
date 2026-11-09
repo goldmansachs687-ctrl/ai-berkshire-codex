@@ -1,4 +1,4 @@
-# AI 伯克希尔 · 完整投研团队 2.2.5
+# AI 伯克希尔 · 完整投研团队 2.2.6
 
 公开版插件 ID 为 `berkshire-team@berkshire-community` 和公司研究入口。基于 [xbtlin/ai-berkshire](https://github.com/xbtlin/ai-berkshire) 的本地Codex适配，版权见LICENSE及THIRD_PARTY_NOTICES.md。
 
@@ -46,3 +46,7 @@
 完整研究在估值阶段读取company-valuation适用方法，按需用现有FinanceToolkit隔离环境计算；复杂经营预测、Excel估值和工作簿检查交Public Equity Investing，真实并购/私有化等专项调用Investment Banking。主伯克希尔唯一调度，AIVA分析及表达保留，共用底稿/来源/模型。工具层实际执行记录为valuation-tools.json，不能以已安装/读取替代真实运行。详见[估值工具层](skills/berkshire-team/references/valuation-tools.md)。
 
 方法权重、固定参数、现金/债务缺失补零和前瞻/历史倍数混用均不从上游示例直接导入。FinanceToolkit简化恒定增长DCF不替换复杂主模型，不自动装依赖或购买数据。公司信息/财报专项不扩大为全研究，旧研究不重跑。
+
+## 2.2.6 报告与核验
+
+统一六部分报告模板。独立双源核验会拒绝重复网址或相同的已记录原文指纹。独立复核完成需有非空报告和复核正文、实际复核者身份及绑定的证据记录。
