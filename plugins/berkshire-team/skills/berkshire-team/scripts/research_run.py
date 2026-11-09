@@ -75,6 +75,11 @@ def checkpoint(directory, role, status, files, note, agent_id=None):
         for name in REVIEW_ARTIFACTS[1:]:
             if name not in files:
                 files.append(name)
+    delivery_binding = None
+    if role == 'independent_review' and status == 'complete' and (directory / 'delivery.json').exists():
+        from delivery_dependencies import binding
+        delivery_binding = binding(directory, state)
+        files.extend(item['path'] for item in delivery_binding['dependencies'] if item['path'] not in files)
     artifacts = []
     for name in files:
         path = (directory / name).resolve()
@@ -91,6 +96,8 @@ def checkpoint(directory, role, status, files, note, agent_id=None):
     if status == 'running':
         record['attempts'] += 1
     record.update(status=status, note=note)
+    if delivery_binding is not None:
+        record['delivery_binding'] = delivery_binding
     if isinstance(agent_id, str) and agent_id.strip():
         record['agent_id'] = agent_id.strip()
     if artifacts:
@@ -113,6 +120,13 @@ def inspect(directory):
         if role == 'independent_review' and record['status'] == 'complete':
             issues.extend(review_issues(directory, state['roles'], record.get('agent_id'),
                                        {artifact['path'] for artifact in record['artifacts']}))
+        if role == 'independent_review' and record['status'] == 'complete' and (directory / 'delivery.json').exists():
+            from delivery_dependencies import binding
+            try:
+                if record.get('delivery_binding') != binding(directory, state):
+                    issues.append('delivery review missing or stale: dependency content/list or research state changed')
+            except (OSError, ValueError, TypeError, KeyError, AttributeError, SyntaxError) as exc:
+                issues.append('invalid delivery dependency: ' + str(exc))
         record['integrity_issues'] = issues
         record['resumable_complete'] = record['status'] == 'complete' and bool(record['artifacts']) and not issues
     return state

@@ -95,3 +95,12 @@ python3 <skill>/scripts/report_audit.py verdict --results-file <目录>/audit-re
 5. 交付report.md、四底稿、质询、来源证据表、模型、核验状态和review.md（若完成）。最终简述核心发现、真实完成角色、可点击产物、关键数据缺口。审计日志不作为出版批准。
 
 保存本地。交易、对外发送、发布、付费数据购买和自动监控均按用户实际授权，不由研究默认触发。
+
+
+## 统一交付验收（未发布开发改进）
+
+交付前按[交付契约与三态规则](references/delivery-acceptance.md)登记适用角色、最低/结论事实、质询分歧、定量估值依赖和逐项缺口。完整公司研究使用 full；无估值的简报使用 qualitative_brief 并明确范围。不得改名为简报来掩盖报告中的估值结论。
+
+独立复核完成后仍用 research_run.py checkpoint；delivery.json 存在时自动绑定当前报告、证据、模型、关键输入、输出及递归依赖。review.json 与 review.md 保存实际复核记录。旧研究没有契约时可继续原断点流程，但不能据旧状态宣称统一交付已通过。
+
+运行 `python3 <skill>/scripts/delivery_gate.py --run <目录> --json`。COMPLETE/0 为适用范围完整，LIMITED/2 为明确限定且经当前复核的有限交付，BLOCKED/1 不可交付。evidence gate 的原 PASS/FAIL/INCOMPLETE 不变；FAIL 不能有限放行。验收只读，不代做独立复核，不自行更新摘要或完成状态。交付时必须报告真实三态与限制。

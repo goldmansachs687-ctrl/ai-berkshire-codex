@@ -79,3 +79,10 @@ AI 伯克希尔是一套面向支持本地插件的 Codex 环境的价值投资�
 ```sh
 python3 -m unittest discover -s plugins/berkshire-team/tests
 ```
+
+
+## Development validation / 开发验收
+
+The development snapshot adds a read-only delivery gate and offline CI. Delivery statuses are COMPLETE (0), LIMITED (2), and BLOCKED (1); the existing evidence gate is unchanged. These source changes have not been released or installed.
+
+本开发副本新增统一交付门禁及轻量离线 CI，未发布、未安装。运行 `python3 scripts/check_plugins.py` 和 `python3 scripts/run_tests.py`，依赖见 `requirements-ci.txt`。完整规则、样例和复现命令见[交付验收说明](docs/delivery-acceptance.md)。GitHub Actions 实际运行状态：待推送后验证。
