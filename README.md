@@ -2,6 +2,10 @@
 
 [English](#english) · [简体中文](#简体中文)
 
+> **Latest published development snapshot (review branch)**: unified delivery acceptance (COMPLETE / LIMITED / BLOCKED), dependency-bound independent review, change invalidation and offline CI. The latest tested snapshot is on [release/public-docs-gpt-deepseek-20261110](https://github.com/goldmansachs687-ctrl/ai-berkshire-codex/tree/release/public-docs-gpt-deepseek-20261110); the default `main` branch remains on 2.2.6 until these changes are reviewed and merged. [Bilingual GPT + DeepSeek setup and feature guide](docs/SETUP_GPT_DEEPSEEK.md) · [Delivery-gate specification](docs/delivery-acceptance.md).
+
+> **最新公开开发快照（评审分支）**：新增统一交付验收（完整 / 有限 / 阻断）、复核依赖绑定、修改后失效机制及离线 CI。以上成果已在 [release/public-docs-gpt-deepseek-20261110 分支](https://github.com/goldmansachs687-ctrl/ai-berkshire-codex/tree/release/public-docs-gpt-deepseek-20261110)公开，默认 `main` 仍保留 2.2.6，待进一步审查合并。[GPT 与 DeepSeek 中英文安装及特点说明](docs/SETUP_GPT_DEEPSEEK.md) · [交付验收规范](docs/delivery-acceptance.md)。
+
 ## English
 
 AI Berkshire is a value-investing research toolkit for Codex environments that support local plugins. It brings together **Berkshire Team 2.2.6**, which organizes company research and checks its evidence, and **AI Value Investing Agents (AIVA) 1.2.1**, which adds analytical and writing guidance. Berkshire Library helps index and search materials in a workspace you choose.
