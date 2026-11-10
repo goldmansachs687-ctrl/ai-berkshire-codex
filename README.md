@@ -6,18 +6,16 @@
 
 AI Berkshire helps you research a company in Codex, from understanding how it makes money to checking what could change its valuation. Give it a company name or ticker. The full workflow uses four specialist roles, builds a source-backed financial record, and produces a report with evidence, valuation assumptions, and open questions.
 
-This repository distributes **Berkshire Team 2.2.6** and **AI Value Investing Agents (AIVA) 1.2.1**. AIVA can supplement the analysis and writing in the same research team. Berkshire Library indexes materials in a workspace you choose.
+This repository distributes **Berkshire Team 2.2.9** and **AI Value Investing Agents (AIVA) 1.2.1**. AIVA can supplement the analysis and writing in the same research team. Berkshire Library indexes materials in a workspace you choose.
 
-### What we are testing in 2.2.9
-
-The local development version extends full research from one request to a reviewed report. It is pending release on GitHub.
+### Full research in 2.2.9
 
 - **One lead, seven subagents.** The lead coordinates four researchers, two debaters, and an independent reviewer. The researchers cover the business and its moat, financials and valuation, industry and competition, and management and risk.
 - **Bull and bear cross-examination.** Both sides start from the same evidence and submit independent opening cases before exchanging questions and replies. The lead records what changed and what would change the judgment again. Each material dispute is tested by changing one assumption in the same model and measuring the effect on cash flow or per-share value.
 - **A progress panel during research.** The local panel shows each role’s current task, recorded findings, next steps, and completed work. It updates as the lead records events, and saved work can be reused after an interruption.
 - **A separate review and a delivery decision.** An independent reviewer checks the evidence, valuation model, and strongest counterarguments. The delivery check distinguishes complete, limited, and blocked work. The final package includes the report, debate record, and the lead’s feedback.
 
-An earlier local build ran all seven subagents through independent review. DeepSeek connected through Codex CLI and reached parallel research in a partial test. Full delivery with DeepSeek has yet to be verified. Third-party API providers bill separately for usage.
+An earlier local build ran all seven subagents through independent review. This release was checked offline. DeepSeek through Codex CLI reached parallel research in a partial test. Full delivery with DeepSeek has yet to be verified. Third-party API providers bill separately for usage.
 
 ### How the research works
 
@@ -40,9 +38,10 @@ With the Codex CLI installed, add this repository as a plugin marketplace.
 
 ```sh
 codex plugin marketplace add goldmansachs687-ctrl/ai-berkshire-codex
+codex plugin add berkshire-team@berkshire-community
 ```
 
-Restart the ChatGPT desktop app. In the Codex plugin directory, select **AI 伯克希尔 · 社区版** and install Berkshire Team. Install and enable AIVA as well to use joint mode. You can also download the repository and open its root folder in Codex to use the local marketplace. [Official OpenAI installation guide](https://developers.openai.com/plugins/build/plugins#install-a-local-plugin-manually)
+If you already added the marketplace, run `codex plugin marketplace upgrade berkshire-community` before running the install command again. Open a new Codex session after installing. For joint mode, also run `codex plugin add ai-value-investing-agents@berkshire-community`. You can also install from **AI 伯克希尔 · 社区版** in the desktop plugin directory. [Official OpenAI installation guide](https://developers.openai.com/plugins/build/plugins#install-a-local-plugin-manually)
 
 For a full study, try “Use Berkshire Team to research Mastercard (MA).” For a quick overview, ask “Explain how Mastercard makes money and cite your sources.” Core verification scripts use Python's standard library. Some market and earnings features require separately configured data dependencies or connectors. [Plugin details](plugins/berkshire-team/README.md)
 
@@ -56,18 +55,16 @@ This is a community edition derived from [AI Berkshire](https://github.com/xbtli
 
 AI 伯克希尔在 Codex 里做公司基本面研究。给出公司名或股票代码，团队从「公司怎么赚钱」查起，整理有来源的长期财务，再回答「哪些事实会改变估值和判断」。报告附有证据、估值假设和待核实的问题。
 
-**本仓库可安装伯克希尔团队 2.2.6 和 AI Value Investing Agents（AIVA）1.2.1。** 启用 AIVA 后，由同一支团队使用它补充分析和写作。伯克希尔资料库可在你指定的工作区登记和检索材料。
+**本仓库可安装伯克希尔团队 2.2.9 和 AI Value Investing Agents（AIVA）1.2.1。** 启用 AIVA 后，由同一支团队使用它补充分析和写作。伯克希尔资料库可在你指定的工作区登记和检索材料。
 
-### 2.2.9 本地开发进展
-
-当前本地开发版把完整研究串成从一句请求到复核交付的流程，待发布到 GitHub。
+### 2.2.9 完整研究流程
 
 - **一位负责人调度七个子智能体。** 四位研究员分别查商业模式与护城河、财务与估值、行业与竞争、管理层与风险。两位辩手负责多空交锋，最后由一位独立复核员检查报告。
 - **多空直接质询。** 双方基于同一批证据独立提交开篇，再互相提问和答复。负责人记录哪些判断发生了变化、什么新事实会让双方改判。重大争议在同一个模型里只改一项假设，复算对现金流或每股价值的影响。
 - **研究进行中可看进度。** 本地面板展示各角色正在查什么、已登记的发现、下一步和已完成底稿。负责人记录新事件后，面板更新。研究中断后可以从已有底稿续做。
 - **复核后明确能否交付。** 独立复核员检查证据、估值模型和最强反证。交付检查区分完整交付、附限制可用和受阻，最终交付报告、辩论记录和负责人反馈。
 
-较早的本地版本已跑完七个子智能体的完整流程。DeepSeek 通过 Codex CLI 接入并跑到并行取证阶段，端到端交付尚未验证。第三方 API 按用量单独计费。
+较早的本地版本已让七个子智能体完成研究和独立复核。本次发布经过本地离线检查。DeepSeek 通过 Codex CLI 接入并跑到并行取证阶段，端到端交付尚未验证。第三方 API 按用量单独计费。
 
 ### 研究怎么做
 
@@ -86,7 +83,7 @@ AI 伯克希尔在 Codex 里做公司基本面研究。给出公司名或股票�
 
 ### 安装和试用
 
-已安装 Codex CLI 时，可运行上面的命令添加本仓库。重启 ChatGPT 桌面应用，在 Codex 插件目录中选择 **AI 伯克希尔 · 社区版** 并安装伯克希尔团队。需要联合模式时也安装并启用 AIVA。你也可以下载源码，在 Codex 中打开仓库根目录，使用本地插件市场。[OpenAI 官方安装文档](https://developers.openai.com/plugins/build/plugins#install-a-local-plugin-manually)
+已安装 Codex CLI 时，运行上面两条命令即可添加市场并安装伯克希尔团队。已添加过市场的用户先运行 `codex plugin marketplace upgrade berkshire-community`，再重新执行安装命令。安装后开启新的 Codex 会话。需要联合模式时，再运行 `codex plugin add ai-value-investing-agents@berkshire-community`。也可以在桌面版插件目录的 **AI 伯克希尔 · 社区版** 安装。[OpenAI 官方安装文档](https://developers.openai.com/plugins/build/plugins#install-a-local-plugin-manually)
 
 完整研究可以试「用伯克希尔团队研究万事达卡（MA）」。只想看公司概况，可以问「万事达卡怎么赚钱？请附来源」。基础核验脚本使用 Python 标准库，部分行情和财报功能需要另外配置数据依赖或连接器。[插件详情](plugins/berkshire-team/README.md)
 
@@ -99,5 +96,7 @@ AI 伯克希尔在 Codex 里做公司基本面研究。给出公司名或股票�
 ### Local tests / 本地测试
 
 ```sh
-python3 -m unittest discover -s plugins/berkshire-team/tests
+python3 -m pip install -r requirements-ci.txt
+python3 scripts/check_plugins.py
+python3 scripts/run_tests.py
 ```

@@ -1,13 +1,13 @@
 {
   "name": "berkshire-team",
-  "version": "2.2.6",
-  "description": "AI Berkshire：公司信息与发展历史、四角色投研、美股财报与盈利预期。",
+  "version": "2.2.9",
+  "description": "AI 伯克希尔：四角色公司研究、多空质询、进度面板与独立复核。",
   "license": "MIT",
   "skills": "./skills/",
   "interface": {
     "displayName": "AI 伯克希尔 · 完整投研团队",
-    "shortDescription": "四角色研究、证据核验与投资资料库",
-    "longDescription": "四角色独立研究与复核，接入AKShare和EdgarTools。将明确阅读的投资书籍、股东信与问答转为带出处和边界的研究规则；主动找资料后交付阅读与规则更新反馈。私人原文保存在工作区。 按需补充美股财报复盘与盈利预期变化，区分官方事实、市场共识与研究假设。 公司信息通过现有联网工具直接读取Wiki与公开财务资料，无需额外安装Wiki或券商插件。 已连接长桥时优先复用公司资料、行情及多年财务，保留原始结果和字段定位；不默认读取账户信息。 完整公司研究默认联合已启用AIVA的分析与表达标准；共用一支团队与一套底稿，保留用户报告顺序、十年财务、长桥取数、知识和严格核验。 估值阶段链接company-valuation与现有FinanceToolkit计算；按需调用Public Equity建模/审计，Investment Banking用于明确交易专项，保留共用证据与模型，不机械混合估值。",
+    "shortDescription": "公司研究、多空辩论与独立复核",
+    "longDescription": "完整研究由负责人调度四位研究员、两位多空辩手和一位独立复核员。进度面板显示各角色任务、已记录的发现和交付状态。团队对照证据、复算关键估值假设，最终交付报告、辩论记录和负责人反馈。支持公司概况、美股财报与预期、投资资料库，以及按可用性接入 AIVA 和授权数据工具。",
     "category": "Finance",
     "capabilities": [
       "Research",

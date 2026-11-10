@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline' file:; base-uri 'none'; form-action 'none'">
+<title>$company · AI 伯克希尔研究进度</title>
+<style>
+:root { color-scheme: light; font-family: system-ui, sans-serif; color: #1c302a; background: #f4f5ef; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { max-width: 1080px; margin: auto; padding: 32px 24px 56px; }
+header { padding: clamp(22px, 5vw, 48px); background: #142f26; color: #fffaf0; border-radius: 18px; }
+header h1 { font-size: clamp(30px, 6vw, 56px); line-height: 1.1; margin: 14px 0; }
+.kicker, time { font-size: .83rem; }
+.kicker { color: #d1e0c9; font-weight: 700; }
+.question { font-size: 1.14rem; max-width: 66ch; }
+.counts { display: flex; gap: 10px 24px; flex-wrap: wrap; margin: 24px 0 0; }
+.counts span { white-space: nowrap; }
+.counts b { font-size: 1.45rem; }
+.steps { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 22px 0; }
+.steps li, .badge { padding: 5px 10px; border-radius: 20px; background: #e8ebe3; font-size: .83rem; }
+.steps [aria-current] { color: #fff; background: #285345; }
+h2 { font-size: 1.22rem; margin: 28px 0 12px; }
+.next, article, .timeline { border: 1px solid #dce2d7; border-radius: 12px; background: #fff; padding: 16px; }
+.next { margin: 0; border-left: 4px solid #487757; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 255px), 1fr)); gap: 12px; }
+.role { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+h3 { font-size: 1rem; margin: 0; }
+.badge { white-space: nowrap; }
+.running { background: #dbeee5; color: #164c37; }
+.complete { background: #e3ecce; color: #33461a; }
+.queued { background: #f5ead1; color: #624918; }
+.failed { background: #f6dfd9; color: #7b3124; }
+p { line-height: 1.55; overflow-wrap: anywhere; }
+article p { margin: 9px 0; }
+.files a { color: #245842; display: inline-block; padding: 4px 5px; overflow-wrap: anywhere; }
+.timeline { list-style: none; margin: 0; }
+.timeline li + li { border-top: 1px solid #dce2d7; padding-top: 12px; }
+time { display: inline-block; color: #4b5f55; margin-right: 12px; }
+.timeline p { margin: 6px 0 12px; }
+</style>
+</head>
+<body><main>
+<header>
+<div class="kicker">AI 伯克希尔 / 研究进度 · $cutoff</div>
+<div class="kicker">最近登记 $latest</div>
+<h1>$company <small>$symbol</small></h1>
+<div>$stage</div>
+<p class="question">$question</p>
+<p class="counts"><span><b>$active</b> 个子智能体运行中</span><span><b>$queued</b> 项待派工</span><span><b>$done</b> 项已完成</span></p>
+</header>
+<ol class="steps" aria-label="研究阶段">$steps</ol>
+<p class="next"><strong>接下来</strong>　$next_action</p>
+$deliverables
+<section><h2>角色与底稿</h2><div class="grid">$cards</div></section>
+<section><h2>研究动态</h2><ol class="timeline">$timeline</ol></section>
+</main>
+<p id="progress-status" hidden>自动更新暂不可用。可重新打开 <a href="./progress.html">进度面板</a> 查看最近记录。</p>
+<script>
+let revision = -1;
+let terminal = false;
+let successfulReads = 0;
+const status = document.querySelector('#progress-status');
+window.berkshireProgress = (snapshot) => {
+  successfulReads++;
+  status.hidden = true;
+  if (snapshot.revision !== revision) {
+    document.querySelector('main').innerHTML = snapshot.content;
+    revision = snapshot.revision;
+  }
+  terminal = snapshot.terminal;
+};
+function poll() {
+  if (terminal) return;
+  const script = document.createElement('script');
+  script.src = './progress-state.js?t=' + Date.now();
+  const readsBefore = successfulReads;
+  let settled = false;
+  const retry = () => {
+    if (settled) return;
+    settled = true;
+    clearTimeout(timer);
+    script.remove();
+    status.hidden = successfulReads > readsBefore;
+    if (!terminal) setTimeout(poll, 5000);
+  };
+  script.onload = retry;
+  script.onerror = retry;
+  const timer = setTimeout(retry, 5000);
+  document.head.append(script);
+}
+poll();
+</script></body>
+</html>

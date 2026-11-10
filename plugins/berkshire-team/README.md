@@ -1,6 +1,6 @@
-# AI 伯克希尔 · 完整投研团队 2.2.6
+# AI 伯克希尔 · 完整投研团队 2.2.9
 
-公开版插件 ID 为 `berkshire-team@berkshire-community` 和公司研究入口。基于 [xbtlin/ai-berkshire](https://github.com/xbtlin/ai-berkshire) 的本地Codex适配，版权见LICENSE及THIRD_PARTY_NOTICES.md。
+公开版插件 ID 为 `berkshire-team@berkshire-community`。基于 [xbtlin/ai-berkshire](https://github.com/xbtlin/ai-berkshire) 的本地Codex适配，版权见LICENSE及THIRD_PARTY_NOTICES.md。
 
 使用示例：
 
@@ -50,3 +50,9 @@
 ## 2.2.6 报告与核验
 
 统一六部分报告模板。独立双源核验会拒绝重复网址或相同的已记录原文指纹。独立复核完成需有非空报告和复核正文、实际复核者身份及绑定的证据记录。
+
+## 2.2.9 多空辩论、进度面板与复核
+
+在 Codex 中说「用 AI 伯克希尔完整研究 COST」即可启动。Leader 按可用席位调度四位研究角色、两位多空辩手和独立复核员，最后交付六部分报告及一页反馈。研究开始时会给出 `progress.html` 链接，在本地浏览器中可跟踪阶段、角色任务、底稿和改变研究方向的事件。[调度和恢复说明](skills/berkshire-team/references/team-progress.md)
+
+多空双方各自提交开篇后互相质询。负责人用同一模型复算关键争议对现金流或每股价值的影响。独立复核完成后，交付检查区分完整交付、附限制可用和受阻。[辩论标准](skills/berkshire-team/references/debate-standard.md) · [交付验收](skills/berkshire-team/references/delivery-acceptance.md)
