@@ -2,6 +2,23 @@
 
 [English](#english) · [简体中文](#简体中文)
 
+## 万事达卡（MA）实跑样例 / Worked example
+
+这次研究在 **2026 年 11 月 10 日（香港时间）**用本地 2.2.8 完成。面板共记录 **27 条事件**。下图按原始记录回放了 **20:17:33** 的交锋阶段。四位研究员已经交卷，两位辩手各自提交了开篇，正在回答对方的质询，独立复核员随后进场。
+
+![万事达卡实跑面板回放。四位研究员已完成，多空两位辩手在回答质询，独立复核员待开始。](docs/examples/mastercard-progress.png)
+
+这轮从 **20:02** 独立取证，**20:14** 进入多空辩论，**20:21** 开始独立复核，**20:26** 附限制交付。以上均为香港时间。
+
+| 争点 | 质询后怎么改判 | 同一模型的受控比较 |
+|---|---|---|
+| **第五年网络返利率** | 多方追问，Capital One 的局部交易迁移为何能推导全球返利率升到 **57%**。空方接受证据不足，把 **57%** 降为压力情景。多方也承认 Apple Card 留任的合同条款未知，按原交易量测算返利冲击。 | 基准保留 **54.5%**。只把第五年返利率提高到 **57%**，DCF 从 **468.28** 降至 **465.67 美元/股**。 |
+| **首年增值服务净收入增速** | 空方拿不出支持 **11%** 的产品或客户披露，接受 **15%** 作为有条件的收入基准。双方把现金兑现列为单独观察项。 | 只把首年服务增速从 **15%** 降到 **11%**，DCF 从 **468.28** 降至 **460.46 美元/股**。 |
+
+**独立复核判为附限制可用（LIMITED）。** 复核员抽查了 **13 组事实**，包括正式收盘价、股数，以及设备和软件资本开支。用单独编写的计算代码复算 **438 项，全部通过**。公开披露缺少增值服务独立营业利润率，交付适用于集团层面的条件估值。
+
+In this completed 2.2.8 run, four researchers handed off to two debaters before a separate reviewer joined. The replay shows both sides answering cross-examination. The bear moved a 57% rebate rate and 11% services growth into stress cases, while the bull acknowledged that the Apple Card terms were unknown and kept transaction volume fixed for the rebate test. Testing each driver separately took the base DCF of **$468.28 per share** to **$465.67** and **$460.46**, respectively. The reviewer passed **438 independent calculations** and limited delivery to group-level conditional valuation because standalone services margins were unavailable.
+
 ## English
 
 AI Berkshire helps you research a company in Codex, from understanding how it makes money to checking what could change its valuation. Give it a company name or ticker. The full workflow uses four specialist roles, builds a source-backed financial record, and produces a report with evidence, valuation assumptions, and open questions.
