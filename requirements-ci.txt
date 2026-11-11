@@ -1,3 +1,4 @@
 # Only offline-test and configuration parsing dependencies. No market/model API SDKs.
 pandas==3.1.1
 PyYAML==6.0.3
+-r plugins/berkshire-team/skills/berkshire-team/references/langgraph-requirements.txt

@@ -1,119 +1,119 @@
-# AI Berkshire · Codex Community Edition / AI 伯克希尔 · Codex 社区版
+# AI Berkshire · AI 伯克希尔
 
-[English](#english) · [简体中文](#简体中文)
+[English](#english) · [简体中文](#简体中文) · [Mastercard case / 万事达卡案例](#mastercard--万事达卡) · [Install / 安装](#install--安装)
 
-## 万事达卡（MA）实跑样例 / Worked example
+**From how a company makes money to what would change your valuation.**
 
-这次研究在 **2026 年 11 月 10 日（香港时间）**用本地 2.2.8 完成。面板共记录 **27 条事件**。下图按原始记录回放了 **20:17:33** 的交锋阶段。四位研究员已经交卷，两位辩手各自提交了开篇，正在回答对方的质询，独立复核员随后进场。
-
-![万事达卡实跑面板回放。四位研究员已完成，多空两位辩手在回答质询，独立复核员待开始。](docs/examples/mastercard-progress.png)
-
-这轮从 **20:02** 独立取证，**20:14** 进入多空辩论，**20:21** 开始独立复核，**20:26** 附限制交付。以上均为香港时间。
-
-| 争点 | 质询后怎么改判 | 同一模型的受控比较 |
-|---|---|---|
-| **第五年网络返利率** | 多方追问，Capital One 的局部交易迁移为何能推导全球返利率升到 **57%**。空方接受证据不足，把 **57%** 降为压力情景。多方也承认 Apple Card 留任的合同条款未知，按原交易量测算返利冲击。 | 基准保留 **54.5%**。只把第五年返利率提高到 **57%**，DCF 从 **468.28** 降至 **465.67 美元/股**。 |
-| **首年增值服务净收入增速** | 空方拿不出支持 **11%** 的产品或客户披露，接受 **15%** 作为有条件的收入基准。双方把现金兑现列为单独观察项。 | 只把首年服务增速从 **15%** 降到 **11%**，DCF 从 **468.28** 降至 **460.46 美元/股**。 |
-
-**独立复核判为附限制可用（LIMITED）。** 复核员抽查了 **13 组事实**，包括正式收盘价、股数，以及设备和软件资本开支。用单独编写的计算代码复算 **438 项，全部通过**。公开披露缺少增值服务独立营业利润率，交付适用于集团层面的条件估值。
-
-In this completed 2.2.8 run, four researchers handed off to two debaters before a separate reviewer joined. The replay shows both sides answering cross-examination. The bear moved a 57% rebate rate and 11% services growth into stress cases, while the bull acknowledged that the Apple Card terms were unknown and kept transaction volume fixed for the rebate test. Testing each driver separately took the base DCF of **$468.28 per share** to **$465.67** and **$460.46**, respectively. The reviewer passed **438 independent calculations** and limited delivery to group-level conditional valuation because standalone services margins were unavailable.
+**从公司怎么赚钱，到哪些证据会改变估值。**
 
 ## English
 
-AI Berkshire helps you research a company in Codex, from understanding how it makes money to checking what could change its valuation. Give it a company name or ticker. The full workflow uses four specialist roles, builds a source-backed financial record, and produces a report with evidence, valuation assumptions, and open questions.
+**Berkshire Team 2.2.13** runs fundamental company research in Codex. Four researchers independently cover business and moat, financials and valuation, industry and competition, and management and risk. Two debaters test the investment case. A separate reviewer checks the evidence, model, and strongest counterargument. **AI Value Investing Agents (AIVA) 1.2.2** adds analytical and writing guidance within the same team when enabled. Berkshire Library indexes investment materials in your workspace.
 
-This repository distributes **Berkshire Team 2.2.9** and **AI Value Investing Agents (AIVA) 1.2.1**. AIVA can supplement the analysis and writing in the same research team. Berkshire Library indexes materials in a workspace you choose.
+> **Try a full study:** Use Berkshire Team to research Mastercard (MA). Explain how it earns money, test the most consequential valuation assumptions, and show what evidence would change your view.
+>
+> **Try a focused question:** How does Mastercard make money? Cite your sources.
 
-### Full research in 2.2.9
+### Follow the research
 
-- **One lead, seven subagents.** The lead coordinates four researchers, two debaters, and an independent reviewer. The researchers cover the business and its moat, financials and valuation, industry and competition, and management and risk.
-- **Bull and bear cross-examination.** Both sides start from the same evidence and submit independent opening cases before exchanging questions and replies. The lead records what changed and what would change the judgment again. Each material dispute is tested by changing one assumption in the same model and measuring the effect on cash flow or per-share value.
-- **A progress panel during research.** The local panel shows each role’s current task, recorded findings, next steps, and completed work. It updates as the lead records events, and saved work can be reused after an interruption.
-- **A separate review and a delivery decision.** An independent reviewer checks the evidence, valuation model, and strongest counterarguments. The delivery check distinguishes complete, limited, and blocked work. The final package includes the report, debate record, and the lead’s feedback.
+| Stage | What you can inspect |
+|---|---|
+| **Understand the company** | Its history, ownership, management and operations. Who pays, what they buy, why they return, and what it costs to grow. |
+| **Reconstruct the financial record** | A ten-year target with original filing links where available. Periods, currencies, units, accounting changes and missing figures are explicit. |
+| **Challenge the thesis** | Four independent research notes, verbatim bull/bear questions and answers, and the evidence that changed each position. The local dashboard updates as work is recorded. |
+| **Value and review** | A bridge from earnings to cash available to shareholders, suitable methods such as DCF and sum-of-the-parts, and controlled tests of disputed assumptions. Independent review supports a delivery status of complete, limited, or blocked. External analyst views come after the team's own valuation and are labeled as full reports, public summaries, or rating actions. |
 
-An earlier local build ran all seven subagents through independent review. This release was checked offline. DeepSeek through Codex CLI reached parallel research in a partial test. Full delivery with DeepSeek has yet to be verified. Third-party API providers bill separately for usage.
+English and Chinese requests use the same scope, evidence standards, six-part report structure, valuation and review. The requested language carries through to the debaters and reviewer. A company overview or earnings recap can run on its own.
 
-### How the research works
+### What's new
 
-A full study starts with a company or ticker and a research cutoff date. It builds an independent view of the business and its value before looking at analyst opinions.
+LangGraph dispatches the live debate, waits for both opening cases before sharing them, and forwards each side's original questions after both submit. It can retrieve evidence from registered files and return a specific issue to the original debater for revision. Saved checkpoints support replay and resumption. [Live debate setup](plugins/berkshire-team/skills/berkshire-team/references/langgraph-debate.md)
 
-1. **Establish the facts.** Identify the company, its history, management, ownership and operations. Use background sources to orient the research, then verify material facts in company filings, exchange disclosures or other primary sources.
-2. **Explain how the business makes money.** Identify who pays, what they buy, why they come back, and which costs and investments grow with revenue.
-3. **Reconstruct the financial record.** Aim for ten years of comparable financials and link to original filings where available. Label each period, currency and unit. Explain changes in accounting or business scope, and mark gaps.
-4. **Challenge the business case.** Four roles cover the business and its moat, financials and valuation, industry and competition, and management and risk. They develop independent findings, compare evidence, and examine what could invalidate the main judgment.
-5. **Estimate value under different assumptions.** Link reported earnings to cash available to shareholders. Compare methods suited to the business, such as discounted cash flow and sum-of-the-parts. Explain why estimates differ, what the current price implies, and which assumptions would change the conclusion.
-6. **Review and report.** When AIVA is enabled, the same team uses it to improve the explanation. A separate reviewer checks the final evidence and model when the environment supports independent review. The report ends with outside research and distinguishes full reports, public summaries and rating actions.
+The local learning workflow records a baseline answer, source reading, teacher feedback, revision, and an independently graded retest. The source material and results stay in your workspace. [Learning workflow](plugins/berkshire-team/skills/berkshire-team/references/langgraph-learning.md)
 
-**Example.** If a subscription company's revenue rises while cash generation weakens, the team checks whether growth came from more customers, higher prices or acquisitions. It then tests whether retention and cash collection support the reported growth, and compares valuations under stronger and weaker retention assumptions. The report shows which evidence would change the judgment.
+## 简体中文
 
-A company overview or earnings recap can run on its own. Full team research requires internet access and subagent support. [Detailed team workflow](plugins/berkshire-team/skills/berkshire-team/SKILL.md) · [Joint Berkshire + AIVA mode](plugins/berkshire-team/skills/berkshire-team/references/joint-mode.md)
+**伯克希尔团队 2.2.13** 在 Codex 中做公司基本面研究。四位研究员分别独立分析商业模式与护城河、财务与估值、行业与竞争、管理层与风险。两位辩手检验投资逻辑，再由独立复核员核查证据、模型和最强反证。启用 **AI Value Investing Agents（AIVA）1.2.2** 后，同一团队会采用它的分析与写作方法。伯克希尔资料库可为你工作区中的投资资料建立索引。
 
-### Install and try
+> **试做完整研究**　用伯克希尔团队研究万事达卡（MA）。说明它怎么赚钱，检验最影响估值的假设，写清什么证据会让你改判。
+>
+> **试问一个专项问题**　万事达卡怎么赚钱？请附上来源。
 
-With the Codex CLI installed, add this repository as a plugin marketplace.
+### 跟着研究读
+
+| 阶段 | 可以看到什么 |
+|---|---|
+| **读懂公司** | 发展历史、股权、管理层和业务。谁付钱、买什么、为什么继续买，以及业务增长需要付出什么成本。 |
+| **还原长期财务** | 尽量整理十年数据，附可取得的原始财报链接，注明期间、币种、单位、口径变化和数据缺口。 |
+| **质疑投资逻辑** | 四份独立研究底稿、多空原始问答、哪些证据促使双方改判。本地面板随研究记录更新。 |
+| **估值并复核** | 从利润到股东可得现金的推导，适用的现金流折现或分部估值，以及对争议假设的单变量检验。独立复核后区分完整交付、附限制可用和受阻。团队先形成自己的估值，最后参考外部机构，并区分研报全文、公开摘要和评级行动。 |
+
+中英文提问共用任务范围、取证标准、六部分报告结构、估值和复核。用户指定的语言会传给辩手和复核员。只问公司概况或财报复盘时，可以走对应专项流程。
+
+### 这版增加了什么
+
+LangGraph 接管正式多空调度，双方交齐开篇后才互看原文，交齐质询后再转发原始问题。它可从已登记文件补证，把复核员退回的具体问题交给原辩手修订，并通过检查点回放或续跑。[正式辩论配置](plugins/berkshire-team/skills/berkshire-team/references/langgraph-debate.md)
+
+本地资料学习流程记录初答、原文阅读、老师批改、修订和独立同题验收。资料和结果保存在你的工作区。[资料学习流程](plugins/berkshire-team/skills/berkshire-team/references/langgraph-learning.md)
+
+## Mastercard / 万事达卡
+
+This completed local run used version 2.2.8 of Berkshire Team on **10 November 2026**, Hong Kong time. The panel recorded 27 events. The screenshot replays cross-examination at **20:17:33**, after both opening cases were filed and before independent review.
+
+这轮实跑于 **2026 年 11 月 10 日**在本地 2.2.8 完成，时间均为香港时间。面板记录了 27 条事件。截图回放 **20:17:33** 的质询阶段，当时双方已提交开篇，独立复核尚未开始。
+
+```mermaid
+flowchart LR
+    A["20:02 · Independent research<br/>独立取证"] --> B["20:14 · Bull and bear debate<br/>多空交锋"]
+    B --> C["20:21 · Independent review<br/>独立复核"]
+    C --> D["20:26 · Limited delivery<br/>附限制交付"]
+```
+
+<details>
+<summary>See the research dashboard / 展开研究面板</summary>
+
+![Mastercard dashboard replay at cross-examination / 万事达卡多空质询阶段的研究面板回放](docs/examples/mastercard-progress.png)
+
+</details>
+
+| What changed in debate / 质询后怎么改判 | Base → stress DCF (USD/share) / 基准至压力估值（美元/股） |
+|---|---:|
+| **Year-five network rebate rate / 第五年网络返利率.** Capital One's partial migration did not support a global rebate rate of 57%. Apple Card contract terms were unavailable, so the test held volume fixed. / Capital One 局部交易迁移不足以支持全球返利率升至 57%。Apple Card 合同条款未知，测试保持交易量不变。 | 54.5% → 57%<br/>$468.28 → $465.67 |
+| **Year-one value-added services net revenue growth / 首年增值服务净收入增速.** The bear found insufficient product or customer disclosure for 11%. The team kept 15% as a conditional base and tracked cash conversion separately. / 产品与客户披露不足以支持 11%。团队有条件保留 15% 基准，另行跟踪现金兑现。 | 15% → 11%<br/>$468.28 → $460.46 |
+
+The reviewer checked 13 groups of facts and independently recomputed 438 calculations, all of which passed. The result was **LIMITED** to a group-level conditional valuation because the standalone services margin was unavailable.
+
+复核员抽查 13 组事实，独立复算 438 项，全部通过。因缺少增值服务独立利润率，交付判为 **LIMITED（附限制可用）**，适用于集团层面的条件估值。
+
+## Install / 安装
 
 ```sh
 codex plugin marketplace add goldmansachs687-ctrl/ai-berkshire-codex
 codex plugin add berkshire-team@berkshire-community
 ```
 
-If you already added the marketplace, run `codex plugin marketplace upgrade berkshire-community` before running the install command again. Open a new Codex session after installing. For joint mode, also run `codex plugin add ai-value-investing-agents@berkshire-community`. You can also install from **AI 伯克希尔 · 社区版** in the desktop plugin directory. [Official OpenAI installation guide](https://developers.openai.com/plugins/build/plugins#install-a-local-plugin-manually)
+Already using the marketplace? Run `codex plugin marketplace upgrade berkshire-community`, then rerun the install command. For joint mode, also install `ai-value-investing-agents@berkshire-community`. Open a new Codex session after installing. The desktop plugin directory lists **AI 伯克希尔 · 社区版**. [Official OpenAI installation guide](https://developers.openai.com/plugins/build/plugins#install-a-local-plugin-manually)
 
-For a full study, try “Use Berkshire Team to research Mastercard (MA).” For a quick overview, ask “Explain how Mastercard makes money and cite your sources.” Core verification scripts use Python's standard library. Some market and earnings features require separately configured data dependencies or connectors. [Plugin details](plugins/berkshire-team/README.md)
+已添加市场的用户先运行 `codex plugin marketplace upgrade berkshire-community`，再重新执行安装命令。使用联合模式时，同时安装 `ai-value-investing-agents@berkshire-community`。安装后开启新的 Codex 会话，也可以在桌面插件目录选择 **AI 伯克希尔 · 社区版**。[OpenAI 官方安装文档](https://developers.openai.com/plugins/build/plugins#install-a-local-plugin-manually)
 
-### Data, security and licensing
+Full studies require internet access and subagent support. Live LangGraph debate requires Python 3.12, pinned dependencies, and a signed-in Codex CLI. Core evidence checks use the Python standard library. Market and earnings integrations use available and authorized data sources. [Plugin details](plugins/berkshire-team/README.md) · [Joint mode](plugins/berkshire-team/skills/berkshire-team/references/joint-mode.md)
 
-Research outputs, library records and retrieved data are saved in your workspace. Online research uses public sources or data tools you've authorized. Follow each provider's data access and usage terms. Report vulnerabilities privately through GitHub and use Issues for ordinary feedback. [Security policy](SECURITY.md)
+完整研究需要联网和子代理能力。LangGraph 正式辩论需要 Python 3.12、固定版本依赖和已登录的 Codex CLI。基础证据核验使用 Python 标准库，行情和财报功能使用可用且已授权的数据源。[插件详情](plugins/berkshire-team/README.md) · [联合模式](plugins/berkshire-team/skills/berkshire-team/references/joint-mode.md)
 
-This is a community edition derived from [AI Berkshire](https://github.com/xbtlin/ai-berkshire) and [AI Value Investing Agents](https://github.com/FernandoAbishai/ai-value-investing-agents). It is unaffiliated with Berkshire Hathaway and carries no endorsement from the investors or upstream maintainers mentioned. It is for research and education and does not provide investment advice. [MIT license](LICENSE) · [Upstream and third-party notices](NOTICE.md)
-
-## 简体中文
-
-AI 伯克希尔在 Codex 里做公司基本面研究。给出公司名或股票代码，团队从「公司怎么赚钱」查起，整理有来源的长期财务，再回答「哪些事实会改变估值和判断」。报告附有证据、估值假设和待核实的问题。
-
-**本仓库可安装伯克希尔团队 2.2.9 和 AI Value Investing Agents（AIVA）1.2.1。** 启用 AIVA 后，由同一支团队使用它补充分析和写作。伯克希尔资料库可在你指定的工作区登记和检索材料。
-
-### 2.2.9 完整研究流程
-
-- **一位负责人调度七个子智能体。** 四位研究员分别查商业模式与护城河、财务与估值、行业与竞争、管理层与风险。两位辩手负责多空交锋，最后由一位独立复核员检查报告。
-- **多空直接质询。** 双方基于同一批证据独立提交开篇，再互相提问和答复。负责人记录哪些判断发生了变化、什么新事实会让双方改判。重大争议在同一个模型里只改一项假设，复算对现金流或每股价值的影响。
-- **研究进行中可看进度。** 本地面板展示各角色正在查什么、已登记的发现、下一步和已完成底稿。负责人记录新事件后，面板更新。研究中断后可以从已有底稿续做。
-- **复核后明确能否交付。** 独立复核员检查证据、估值模型和最强反证。交付检查区分完整交付、附限制可用和受阻，最终交付报告、辩论记录和负责人反馈。
-
-较早的本地版本已让七个子智能体完成研究和独立复核。本次发布经过本地离线检查。DeepSeek 通过 Codex CLI 接入并跑到并行取证阶段，端到端交付尚未验证。第三方 API 按用量单独计费。
-
-### 研究怎么做
-
-完整研究从公司名称或股票代码、研究截止日开始。团队先对公司和价值形成独立判断，最后才看外部机构的意见。
-
-1. **确认公司事实。** 弄清公司主体、发展历史、管理层、股权和业务范围。先用背景资料了解脉络，再用公司财报、交易所公告等一手来源核实关键事实。
-2. **讲清公司怎么赚钱。** 说明谁付钱、买什么、为什么会继续买，以及收入增长会带来哪些成本和再投资。
-3. **还原长期财务。** 尽量整理十年可比财务数据，并附可取得的原始财报链接。标明期间、币种和单位，解释会计口径或业务范围的变化，注明缺失数据。
-4. **质疑投资逻辑。** 四个角色分别看商业模式与护城河、财务与估值、行业与竞争、管理层与风险。先各自形成判断，再对照证据，找出什么可能推翻主要结论。
-5. **比较不同假设下的价值。** 从账面利润推算股东可获得的现金，选用适合公司的方法，例如现金流折现或分部估值。解释结果为什么不同、当前股价反映了什么预期，以及哪些假设会改变结论。
-6. **复核并写成报告。** 启用 AIVA 后，由同一团队用它改善分析表达。环境支持独立复核时，再由独立复核者检查最终证据和模型。报告最后参考外部研究，区分原始全文、公开摘要和评级行动。
-
-**举个例子。** 如果一家订阅公司的营收上升，但现金流变弱，团队会先查增长来自新增客户、提价还是收购，再看续费和回款能否支撑这部分增长，最后比较高续费和低续费情景下的估值。报告会写清楚什么证据出现时，原来的判断需要调整。
-
-只查公司概况或复盘财报时，可以单独运行对应流程。完整团队研究需要联网和子代理能力。[团队研究规范](plugins/berkshire-team/skills/berkshire-team/SKILL.md) · [伯克希尔与 AIVA 联合模式](plugins/berkshire-team/skills/berkshire-team/references/joint-mode.md)
-
-### 安装和试用
-
-已安装 Codex CLI 时，运行上面两条命令即可添加市场并安装伯克希尔团队。已添加过市场的用户先运行 `codex plugin marketplace upgrade berkshire-community`，再重新执行安装命令。安装后开启新的 Codex 会话。需要联合模式时，再运行 `codex plugin add ai-value-investing-agents@berkshire-community`。也可以在桌面版插件目录的 **AI 伯克希尔 · 社区版** 安装。[OpenAI 官方安装文档](https://developers.openai.com/plugins/build/plugins#install-a-local-plugin-manually)
-
-完整研究可以试「用伯克希尔团队研究万事达卡（MA）」。只想看公司概况，可以问「万事达卡怎么赚钱？请附来源」。基础核验脚本使用 Python 标准库，部分行情和财报功能需要另外配置数据依赖或连接器。[插件详情](plugins/berkshire-team/README.md)
-
-### 数据、安全与许可
-
-报告、资料库和取数结果保存在你的工作区。联网研究使用公开来源或你已授权的数据工具。使用数据请遵守各提供方的访问和使用条款。漏洞请通过 GitHub 私密提交，普通反馈可用 Issues。[安全说明](SECURITY.md)
-
-本社区版基于 [AI Berkshire](https://github.com/xbtlin/ai-berkshire) 和 [AI Value Investing Agents](https://github.com/FernandoAbishai/ai-value-investing-agents)，与伯克希尔哈撒韦无隶属关系，也未获文中投资人或上游维护者背书。内容供研究和学习使用，不构成投资建议。[MIT 许可证](LICENSE) · [上游与第三方声明](NOTICE.md)
-
-### Local tests / 本地测试
+## Verification / 验证
 
 ```sh
 python3 -m pip install -r requirements-ci.txt
 python3 scripts/check_plugins.py
 python3 scripts/run_tests.py
 ```
+
+The offline suite verifies configurations, evidence and delivery rules, and workflow mechanics. See the Actions run for the published revision. [Delivery acceptance](docs/delivery-acceptance.md)
+
+离线测试覆盖配置、证据与交付规则、工作流机制。发布版本的结果可在 Actions 查看。[交付验收](docs/delivery-acceptance.md)
+
+## Data and licensing / 数据与许可
+
+Research outputs and library records are stored in your workspace. Follow each provider's data terms. Report vulnerabilities privately through GitHub and use Issues for ordinary feedback. The community edition derives from AI Berkshire and AI Value Investing Agents and is unaffiliated with Berkshire Hathaway. It is for research and education. [Security policy](SECURITY.md) · [MIT license](LICENSE) · [Upstream credits and third-party notices](NOTICE.md)
+
+报告和资料库记录保存在工作区。使用数据时遵守各提供方条款。漏洞请在 GitHub 私密提交，普通反馈可用 Issues。本社区版源自 AI Berkshire 和 AI Value Investing Agents，与伯克希尔哈撒韦无隶属关系，供研究与学习使用。[安全说明](SECURITY.md) · [MIT 许可证](LICENSE) · [上游和第三方声明](NOTICE.md)

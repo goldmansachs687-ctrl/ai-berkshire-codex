@@ -1,7 +1,9 @@
 """Record team milestones and render a local dashboard from the run state."""
+import hashlib
 import json
 from datetime import datetime, timezone
 from html import escape
+from os.path import relpath
 from pathlib import Path
 from string import Template
 from urllib.parse import quote
@@ -57,7 +59,7 @@ def start(state, question, next_action, display_timezone):
     for role in DEBATERS:
         state['roles'][role] = {'status': 'pending', 'attempts': 0, 'artifacts': [], 'note': ''}
     state['progress'] = {'stage': 'setup', 'question': question, 'next_action': next_action,
-                         'timezone': display_timezone, 'debate_protocol': 3, 'events': []}
+                         'timezone': display_timezone, 'debate_protocol': 4, 'events': []}
     event(state, '立项', question)
 
 
@@ -125,8 +127,18 @@ def validate_role(state, role, status, agent_id, artifacts, directory):
             raise ValueError('agent ID conflicts with an active or independent role')
 
 
-def write_dashboard(directory, state):
+def write_dashboard(directory, state, *, artifact_directory=None):
     progress = state['progress']
+    replay = artifact_directory is not None
+    artifact_directory = artifact_directory if replay else directory
+    status_labels = {**STATUS, 'queued': '待核对', 'complete': '已核对'} if replay else STATUS
+
+    def artifact_link(path, label):
+        resolved = (artifact_directory / path).resolve()
+        if not resolved.is_relative_to(artifact_directory) or not resolved.is_file():
+            return ''
+        return f'<a href="./{quote(relpath(resolved, directory))}">{escape(label)}</a>'
+
     stage = progress['stage']
     records = state['roles']
     active = {r['agent_id'] for r in records.values() if r['status'] == 'running' and r.get('agent_id')}
@@ -144,12 +156,11 @@ def write_dashboard(directory, state):
             path = artifact['path']
             if role == REVIEWER and path not in ('review.md', 'review.json'):
                 continue
-            resolved = (directory / path).resolve()
-            if resolved.is_relative_to(directory) and resolved.is_file():
-                relative = resolved.relative_to(directory)
-                links.append(f'<a href="./{quote(relative.as_posix())}">{escape(relative.name)}</a>')
+            link = artifact_link(path, Path(path).name)
+            if link:
+                links.append(link)
         cards.append(f'<article><div class="role"><h3>{LABELS[role]}</h3>'
-                     f'<span class="badge {status}">{STATUS[status]}</span></div>'
+                     f'<span class="badge {status}">{status_labels[status]}</span></div>'
                      f'<p>{escape(record["note"] or "等待进入对应阶段。")}</p>'
                      f'<div class="files">{" ".join(links)}</div></article>')
     timeline = []
@@ -161,13 +172,18 @@ def write_dashboard(directory, state):
                         f'<strong>{escape(item["kind"] + role)}</strong>'
                         f'<p>{escape(item["note"])}</p></li>')
     debate_link = ''
-    if stage in {'debate', 'valuation', 'review', 'complete', 'limited'} and (directory / 'cross-examination.md').is_file():
-        debate_link = '<p class="files"><a href="./cross-examination.md">查看多空交锋</a></p>'
+    if stage in {'valuation', 'review', 'complete', 'limited'} or (stage == 'debate' and not replay):
+        debate_link = artifact_link('cross-examination.md', '查看多空交锋')
     deliverables = debate_link
     if stage in {'complete', 'limited'}:
-        deliverables += ('<p class="files"><a href="./report.md">正式报告</a> '
-                        '<a href="./leader-feedback.md">Leader 反馈</a> '
-                        '<a href="./debate-ruling.md">多空裁决</a></p>')
+        links = (('report.md', '正式报告'), ('leader-feedback.md', 'Leader 反馈'),
+                 ('debate-ruling.md', '多空裁决'))
+        deliverables = ' '.join((debate_link, *(artifact_link(path, label) for path, label in links)))
+    if deliverables.strip():
+        deliverables = f'<p class="files">{deliverables}</p>'
+    counts = (f'<span><b>{done}</b> / {len(TEAM)} 项角色产物已核对</span>' if replay else
+              f'<span><b>{len(active)}</b> 个子智能体运行中</span>'
+              f'<span><b>{len(queued)}</b> 项待派工</span><span><b>{done}</b> 项已完成</span>')
     template = Template(Path(__file__).with_name('research_progress.html').read_text(encoding='utf-8'))
     events = progress['events']
     latest = datetime.fromisoformat(events[-1]['time']).astimezone(display_timezone)
@@ -175,11 +191,12 @@ def write_dashboard(directory, state):
         latest=escape(latest.strftime('%m-%d %H:%M:%S %Z')),
         company=escape(state['company']), symbol=escape(state['symbol']),
         cutoff=escape(state['as_of']), stage=STAGES[stage], question=escape(progress['question']),
-        active=len(active), queued=len(queued), done=done, steps=steps, cards=''.join(cards),
+        counts=counts, steps=steps, cards=''.join(cards),
         next_action=escape(progress['next_action']), timeline=''.join(timeline), deliverables=deliverables,
     )
-    payload = {'revision': len(events), 'terminal': stage in {'complete', 'limited'},
-               'content': page.split('<main>', 1)[1].split('</main>', 1)[0]}
+    content = page.split('<main>', 1)[1].split('</main>', 1)[0]
+    revision = hashlib.sha256(content.encode('utf-8')).hexdigest() if replay else len(events)
+    payload = {'revision': revision, 'terminal': stage in {'complete', 'limited'}, 'content': content}
     write_in_place(directory / 'progress-state.js', 'window.berkshireProgress(' + json.dumps(payload) + ');')
     write_in_place(directory / 'progress.html', page)
 

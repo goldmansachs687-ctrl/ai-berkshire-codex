@@ -4,7 +4,8 @@ import hashlib
 from decimal import Decimal
 
 from delivery_dependencies import read_file
-from delivery_model import pointer
+from delivery_model import check_model, pointer
+from evidence_gate import audit
 from research_progress import DEBATE_BASIS, DEBATE_OUTPUTS, OPENINGS
 
 
@@ -14,7 +15,18 @@ def require_text(record, fields):
             raise ValueError(f'debate requires nonempty {name}')
 
 
+def preflight_debate(root, state):
+    contract = read_file(root, 'delivery.json')[2]
+    ledger = read_file(root, 'evidence.json')[2]
+    manifest = read_file(root, contract['valuation']['manifest'])[2]
+    passed = {item['id'] for item in audit(ledger)['pass_items']}
+    model_checks = check_model(root, manifest, ledger, passed)
+    challenges = read_file(root, contract['challenges'])[2]
+    return check_debate(root, state, challenges, manifest, model_checks)
+
+
 def check_debate(root, state, challenge, manifest, model_checks):
+    protocol = state['progress'].get('debate_protocol', 0)
     basis, _, _ = read_file(root, DEBATE_BASIS)
     if hashlib.sha256(basis).hexdigest() != state['progress'].get('debate_basis_sha256'):
         raise ValueError('debate basis changed after openings')
@@ -29,8 +41,7 @@ def check_debate(root, state, challenge, manifest, model_checks):
     for item in disputes:
         require_text(item, ('id', 'metric', 'bull', 'bear', 'test', 'verdict', 'driver',
                             'base_check', 'counter_check'))
-        if (state['progress'].get('debate_protocol', 0) >= 3
-                and item.get('impact_unit') not in {'cash', 'per_share'}):
+        if protocol >= 3 and item.get('impact_unit') not in {'cash', 'per_share'}:
             raise ValueError('debate impact must be stated as cash or per-share value')
     issue_ids = {item['id'] for item in disputes}
     if len(issue_ids) != len(disputes):
@@ -49,6 +60,9 @@ def check_debate(root, state, challenge, manifest, model_checks):
         questions.add((question['dispute_id'], sender))
     if questions != {(issue, side) for issue in issue_ids for side in roles}:
         raise ValueError('each material dispute needs questions and replies in both directions')
+    if protocol >= 4:
+        from research_exchange import check_transcript
+        check_transcript(root, state['roles'], issue_ids, challenge['questions'])
 
     definitions = {item['name']: item for item in manifest['checks']}
     checked = {item['name']: Decimal(item['recomputed']) for item in model_checks}
@@ -75,9 +89,18 @@ def check_debate(root, state, challenge, manifest, model_checks):
         changed = {name for name in a if pointer(root, a[name]) != pointer(root, b[name])}
         if changed != {driver}:
             raise ValueError('controlled comparison must change only the stated driver')
-        results.append(dict(id=item['id'], metric=item['metric'], verdict=item['verdict'], driver=driver,
-                            impact_unit=item.get('impact_unit'),
-                            base_input=str(pointer(root, a[driver])), counter_input=str(pointer(root, b[driver])),
-                            base_output=str(checked[names[0]]), counter_output=str(checked[names[1]]),
-                            delta=str(checked[names[1]] - checked[names[0]])))
+        base_input, counter_input = pointer(root, a[driver]), pointer(root, b[driver])
+        result = dict(id=item['id'], metric=item['metric'], verdict=item['verdict'], driver=driver,
+                      impact_unit=item.get('impact_unit'),
+                      base_input=str(base_input), counter_input=str(counter_input),
+                      base_output=str(checked[names[0]]), counter_output=str(checked[names[1]]),
+                      delta=str(checked[names[1]] - checked[names[0]]))
+        if protocol >= 4:
+            require_text(item, ('adopted_input', 'decisive_evidence'))
+            adopted = Decimal(item['adopted_input'])
+            expected_input = counter_input if item['verdict'] == 'update' else base_input
+            if not adopted.is_finite() or adopted != expected_input:
+                raise ValueError('ruling must adopt the modeled input that matches its verdict: ' + item['id'])
+            result.update(adopted_input=str(adopted), decisive_evidence=item['decisive_evidence'])
+        results.append(result)
     return results

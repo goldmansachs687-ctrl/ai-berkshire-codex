@@ -55,10 +55,31 @@ class DeliveryCLI(unittest.TestCase):
         checkpoint(self.root, 'bear_case', 'waiting', ['bear-opening.md'], 'Waiting', 'fixture-bear')
         for role, file in roles.items():
             side = role.split('_')[0]
+            opposite = 'bear' if side == 'bull' else 'bull'
             agent = 'fixture-' + side
-            checkpoint(self.root, role, 'running', [], 'Exchange', agent)
+            checkpoint(self.root, role, 'running', [], 'Question round', agent)
             (self.root/file).write_text('Synthetic case and opposing response.', encoding='utf-8')
-            checkpoint(self.root, role, 'complete', [file, side+'-opening.md'], 'Filed', agent)
+            with self.assertRaisesRegex(ValueError, 'question sets'):
+                checkpoint(self.root, role, 'complete', [file, side+'-opening.md'], 'Skipped round', agent)
+            save(self.root, side+'-questions.json', [
+                dict(dispute_id=issue, target=f'Independent {opposite} opening.',
+                     question='What would change your view?') for issue in ('multiple', 'revenue')])
+            checkpoint(self.root, role, 'waiting', [side+'-opening.md', side+'-questions.json'],
+                       'Questions filed', agent)
+            if side == 'bull':
+                with self.assertRaisesRegex(ValueError, 'bear-questions.json'):
+                    checkpoint(self.root, role, 'running', [], 'Premature reply', agent)
+        for role, file in roles.items():
+            side = role.split('_')[0]
+            agent = 'fixture-' + side
+            checkpoint(self.root, role, 'running', [], 'Reply round', agent)
+            save(self.root, side+'-replies.json', [
+                dict(dispute_id=issue, response='A new observation.', concession='Testable only later.',
+                     position_before='Original estimate', position_after='Unchanged',
+                     change_trigger='Observe FY2026 report', source_locator='FY2025 report, page 10')
+                for issue in ('multiple', 'revenue')])
+            checkpoint(self.root, role, 'complete',
+                       [file, side+'-opening.md', side+'-questions.json', side+'-replies.json'], 'Filed', agent)
         self.add_controlled_debates()
         stage('valuation')
         with self.assertRaisesRegex(ValueError, 'debate-ruling.md'):
@@ -72,6 +93,19 @@ class DeliveryCLI(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'BLOCKED'):
             stage('complete')
         checkpoint(self.root, 'independent_review', 'running', [], 'Independent review', 'fixture-reviewer')
+        audit = load(self.root, 'review.json')
+        audit['debate_judgments'] = [
+            dict(dispute_id=issue, strongest_evidence='FY2025 annual filing',
+                 directness='Answers the data limitation', independent_judgment='Retain until disclosure',
+                 assumption_impact='Sensitivity validated', decision='revise')
+            for issue in ('multiple', 'revenue')]
+        save(self.root, 'review.json', audit)
+        review(self.root)
+        self.assertTrue(any('requires debate revision' in i['reason'] for i in self.run_gate('BLOCKED')['issues']))
+        for judgment in audit['debate_judgments']:
+            judgment['decision'] = 'accept'
+        save(self.root, 'review.json', audit)
+        checkpoint(self.root, 'independent_review', 'running', [], 'Review revised decision', 'fixture-reviewer')
         review(self.root)
         stage('complete')
         self.assertIn('href="./leader-feedback.md"', page.read_text(encoding='utf-8'))
@@ -88,6 +122,17 @@ class DeliveryCLI(unittest.TestCase):
         save(self.root, 'challenges.json', challenges)
         self.assertTrue(any('both directions' in i['reason'] for i in self.run_gate('BLOCKED')['issues']))
         challenges['questions'] = questions
+        original = questions[0]['response']
+        questions[0]['response'] = 'Leader paraphrase presented as original.'
+        save(self.root, 'challenges.json', challenges)
+        self.assertTrue(any('transcript differs' in i['reason'] for i in self.run_gate('BLOCKED')['issues']))
+        questions[0]['response'] = original
+        save(self.root, 'challenges.json', challenges)
+        original = challenges['disagreements'][0]['verdict']
+        challenges['disagreements'][0]['verdict'] = 'update'
+        save(self.root, 'challenges.json', challenges)
+        self.assertTrue(any('matches its verdict' in i['reason'] for i in self.run_gate('BLOCKED')['issues']))
+        challenges['disagreements'][0]['verdict'] = original
         save(self.root, 'challenges.json', challenges)
         model = load(self.root, 'valuation.json')
         model['checks'][2]['variables']['multiple'] = model['checks'][1]['variables']['multiple']
@@ -121,7 +166,9 @@ class DeliveryCLI(unittest.TestCase):
             disagreements.append(dict(id=driver, question=driver, metric=driver+' FY2026 USD or multiple',
                 material=True, status='resolved', resolution='Compare same model inputs.', evidence=['source.md'],
                 bull='Upper assumption', bear='Lower assumption', test='Observe FY2026 report.',
-                verdict='unresolved', driver=driver, impact_unit='per_share', base_check=baseline['name'], counter_check=key))
+                verdict='unresolved', driver=driver, impact_unit='per_share', base_check=baseline['name'],
+                counter_check=key, adopted_input=str(inputs[driver]),
+                decisive_evidence='Available filings support retaining the base pending disclosure.'))
             for sender, receiver in [('bull','bear'), ('bear','bull')]:
                 questions.append({'question':'What would change your view?', 'response':'A new observation.',
                                   'from':sender, 'to':receiver, 'dispute_id':driver, 'concession':'Testable only later.',

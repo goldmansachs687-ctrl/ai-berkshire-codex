@@ -99,7 +99,11 @@ def checkpoint(directory, role, status, files, note, agent_id=None):
             raise ValueError('; '.join(issues))
     if 'progress' in state:
         progress.validate_role(state, role, status, agent_id, artifacts, directory)
-        if state['progress'].get('debate_protocol', 0) >= 2 and role in progress.DEBATERS:
+        protocol = state['progress'].get('debate_protocol', 0)
+        if protocol >= 4 and role in progress.DEBATERS:
+            from research_exchange import checkpoint_exchange
+            checkpoint_exchange(directory, state['roles'], role, status, artifacts, agent_id)
+        elif protocol >= 2 and role in progress.DEBATERS:
             if status == 'waiting':
                 opening = progress.OPENINGS[role]
                 if not (directory / opening).read_text(encoding='utf-8').strip():
@@ -183,15 +187,8 @@ def update_progress(directory, action, *, note='', question='', next_action='', 
             for name in progress.REVIEW_OUTPUTS:
                 read_file(directory, name)
             if state['progress'].get('debate_protocol', 0) >= 2:
-                from delivery_model import check_model
-                from evidence_gate import audit
-                from research_debate import check_debate
-                contract = read_file(directory, 'delivery.json')[2]
-                ledger = read_file(directory, 'evidence.json')[2]
-                manifest = read_file(directory, contract['valuation']['manifest'])[2]
-                passed = {item['id'] for item in audit(ledger)['pass_items']}
-                checked = check_model(directory, manifest, ledger, passed)
-                check_debate(directory, state, read_file(directory, contract['challenges'])[2], manifest, checked)
+                from research_debate import preflight_debate
+                preflight_debate(directory, state)
         progress.set_stage(state, inspect(directory), stage, note, next_action)
     elif action == 'event':
         if state['progress']['stage'] in {'blocked', 'complete', 'limited'}:
@@ -213,6 +210,17 @@ def update_progress(directory, action, *, note='', question='', next_action='', 
 
 
 
+
+def add_learning_parser(commands):
+    learn = commands.add_parser('graph-learn', help='checkpoint a local learning exercise through LangGraph')
+    learn.add_argument('action', choices=('init', 'start', 'submit', 'resume'))
+    learn.add_argument('--run', required=True)
+    learn.add_argument('--stage')
+    learn.add_argument('--role')
+    learn.add_argument('--agent')
+    learn.add_argument('--note')
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest='command', required=True)
@@ -228,6 +236,18 @@ def main():
     update.add_argument('--agent-id')
     resume = commands.add_parser('resume')
     resume.add_argument('--run', required=True)
+    handoff = commands.add_parser('debate-ready', help='check what can be shared before contacting a debater')
+    handoff.add_argument('--run', required=True)
+    handoff.add_argument('--role', choices=progress.DEBATERS, required=True)
+    replay = commands.add_parser('graph-replay', help='replay saved research with LangGraph')
+    replay.add_argument('--output', required=True)
+    source = replay.add_mutually_exclusive_group(required=True)
+    source.add_argument('--source')
+    source.add_argument('--resume', action='store_true')
+    replay.add_argument('--pause-before-review', action='store_true')
+    live = commands.add_parser('graph-debate', help='dispatch the live debate through LangGraph')
+    live.add_argument('--run', required=True)
+    live.add_argument('--resume', action='store_true')
     for action in ('start', 'stage', 'event', 'render'):
         view = commands.add_parser('progress-' + action)
         view.add_argument('--run', required=True)
@@ -243,10 +263,52 @@ def main():
             view.add_argument('--stage', choices=tuple(progress.STAGES), required=True)
         if action == 'event':
             view.add_argument('--role', choices=progress.TEAM)
+    add_learning_parser(commands)
     args = parser.parse_args()
     try:
         if args.command == 'init':
             print(initialize(args.root, args.company, args.symbol, args.date))
+        elif args.command == 'debate-ready':
+            from research_exchange import ready
+            directory = Path(args.run).resolve()
+            state = json.loads((directory / 'run.json').read_text(encoding='utf-8'))
+            if state['progress']['stage'] != 'debate' or state['progress'].get('debate_protocol', 0) < 4:
+                raise ValueError('debate-ready requires an active debate with protocol 4 or later')
+            print(ready(directory, state['roles'], args.role))
+        elif args.command == 'graph-learn':
+            try:
+                from research_learning import run_learning
+            except ModuleNotFoundError as exc:
+                if exc.name not in {'langgraph', 'langgraph.checkpoint.sqlite'}:
+                    raise
+                raise ValueError('Install dependencies from references/langgraph-requirements.txt') from exc
+            result = run_learning(args.run, args.action, stage=args.stage, role=args.role,
+                                  agent=args.agent, note=args.note)
+            print(json.dumps(result, ensure_ascii=False, indent=2))
+        elif args.command == 'graph-replay':
+            try:
+                from research_graph import replay_run
+            except ModuleNotFoundError as exc:
+                if exc.name not in {'langgraph', 'langgraph.checkpoint.sqlite'}:
+                    raise
+                raise ValueError('Install the optional dependencies from references/langgraph-requirements.txt') from exc
+            if args.resume and args.pause_before_review:
+                raise ValueError('--pause-before-review is set when starting a replay')
+            result = replay_run(args.output, args.source, args.pause_before_review)
+            print(json.dumps(result, ensure_ascii=False, indent=2))
+            if result['status'] == 'BLOCKED':
+                raise SystemExit(1)
+        elif args.command == 'graph-debate':
+            try:
+                from research_live_debate import run_live_debate
+            except ModuleNotFoundError as exc:
+                if exc.name not in {'langgraph', 'langgraph.checkpoint.sqlite'}:
+                    raise
+                raise ValueError('Install dependencies from references/langgraph-requirements.txt') from exc
+            result = run_live_debate(args.run, resume=args.resume)
+            print(json.dumps(result, ensure_ascii=False, indent=2))
+            if result['status'] == 'BLOCKED':
+                raise SystemExit(1)
         elif args.command.startswith('progress-'):
             print(update_progress(
                 args.run, args.command.removeprefix('progress-'), note=getattr(args, 'note', ''),

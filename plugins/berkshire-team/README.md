@@ -1,4 +1,16 @@
-# AI 伯克希尔 · 完整投研团队 2.2.9
+# AI 伯克希尔 · Berkshire Team 2.2.13
+
+## English
+
+Install `berkshire-team@berkshire-community` from the [community marketplace](../../README.md). Full studies use four independent researchers, bull and bear debaters, and a separate reviewer. LangGraph coordinates debate, evidence retrieval and targeted revision. Track the work in the local dashboard and resume it from saved checkpoints. AIVA adds analysis and writing guidance when enabled. [Live debate setup](skills/berkshire-team/references/langgraph-debate.md)
+
+Try “Research Mastercard with Berkshire Team” for a full study, or “How does Mastercard make money?” for a focused question. Both languages use the same routing, evidence, valuation and review standards. Outputs follow the requested language. The local library learning workflow records sources, revisions and independently graded practice. [Learning workflow](skills/berkshire-team/references/langgraph-learning.md)
+
+## 简体中文
+
+完整研究由四位研究员、两位多空辩手及一位独立复核员完成。LangGraph 负责调度辩论、补证和定向修订。本地进度面板记录研究过程，支持从检查点续做。启用 AIVA 时，同一团队采用它的分析与写作方法。[正式辩论配置](skills/berkshire-team/references/langgraph-debate.md)
+
+可以试「用伯克希尔团队研究万事达卡」或「万事达卡怎么赚钱」。中英文共用路由、证据、估值和复核标准，按用户要求的语言交付。本地资料学习记录来源、修订与独立案例验收。[资料学习流程](skills/berkshire-team/references/langgraph-learning.md)
 
 公开版插件 ID 为 `berkshire-team@berkshire-community`。基于 [xbtlin/ai-berkshire](https://github.com/xbtlin/ai-berkshire) 的本地Codex适配，版权见LICENSE及THIRD_PARTY_NOTICES.md。
 

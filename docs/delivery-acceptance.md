@@ -34,3 +34,9 @@ python3 plugins/berkshire-team/skills/berkshire-team/scripts/research_run.py che
 系统自动纳入模型、输入、输出及必要依赖；不能用重复 checkpoint 代替真正重审。验收本身绝不会调用 checkpoint。
 
 CI 在 push 和 pull_request 执行相同配置检查和全套测试。包级版本分别核对，历史版本和上游版本不会被误判为必须一致。测试入口发现 skip/expected failure、空套件或真实失败均返回非零。CI 只验证配置和测试。结果可在仓库的 Actions 页面查看。
+
+## English overview
+
+Run the setup, validation and fixture-generation commands above from the repository root with Python 3.12. The example generator uses fictional research and reviews. Run the delivery gate against each generated directory. The expected exit codes are COMPLETE/0, LIMITED/2 and BLOCKED/1. A complete qualitative brief applies only to the declared qualitative scope.
+
+A real review binds the report, evidence, model and material dependencies by hash. Changing a reviewed input requires review of the affected work. The gate is read-only. GitHub Actions runs the same configuration checks and offline test suite on push and pull request.

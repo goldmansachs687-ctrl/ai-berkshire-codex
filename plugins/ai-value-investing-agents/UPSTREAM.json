@@ -10,10 +10,11 @@
     "Default joint routing in local aiva adapter; upstream workflows unchanged",
     "Community packaging uses its own marketplace name and public-source fallbacks.",
     "Omit optional star-chart renderer, bundled font and logo, and authenticated Xueqiu scraper.",
-    "News Pulse uses publicly accessible or expressly authorized sources for investor commentary."
+    "News Pulse uses publicly accessible or expressly authorized sources for investor commentary.",
+    "Match output language to the request and use the same intent-based routing in English and Chinese."
   ],
   "upstream_skill_text_modified": true,
-  "local_package_version": "1.2.1",
+  "local_package_version": "1.2.2",
   "modified_upstream_skills": [
     "news-pulse"
   ]

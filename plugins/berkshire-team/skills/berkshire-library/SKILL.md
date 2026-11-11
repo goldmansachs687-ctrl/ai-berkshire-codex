@@ -18,3 +18,5 @@ description: 将用户提供的投资书籍、股东信、讲座文字稿和个�
 7. 材料内容变化会使哈希校验失败，需要重新登记和阅读。不能宣称上传或登记等于永久训练，也不能以规则数量证明投资效果。[第一批规则](../berkshire-team/references/learned-principles.md)展示已有转化及阅读边界；后续按实际材料增补。
 
 书籍原则作为研究问题生成器，不能覆盖当前事实、用户授权或触发交易/发信。不要未经允许将私人书籍、批注或持仓发送外部服务。
+
+用户要求学员提炼、老师批改和案例验收时，执行[本地 LangGraph 学习流程](../berkshire-team/references/langgraph-learning.md)。录音原件以 `--kind audio` 或 `--kind video` 登记，使用含原声时间的 UTF-8 转写作为 `--text-file`。

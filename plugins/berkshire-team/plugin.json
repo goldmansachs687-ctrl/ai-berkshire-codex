@@ -1,15 +1,15 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "berkshire-team",
-  "version": "2.2.9",
-  "description": "AI 伯克希尔：四角色公司研究、多空质询、进度面板与独立复核。",
+  "version": "2.2.13",
+  "description": "Bilingual company research, independent evidence, bull/bear debate and review. / 双语公司研究、独立取证、多空辩论与复核。",
   "license": "MIT",
   "extensions": {
     "com.openai": {
       "interface": {
         "displayName": "AI 伯克希尔 · 完整投研团队",
         "shortDescription": "公司研究、多空辩论与独立复核",
-        "longDescription": "完整研究由负责人调度四位研究员、两位多空辩手和一位独立复核员。进度面板显示各角色任务、已记录的发现和交付状态。团队对照证据、复算关键估值假设，最终交付报告、辩论记录和负责人反馈。支持公司概况、美股财报与预期、投资资料库，以及按可用性接入 AIVA 和授权数据工具。",
+        "longDescription": "完整研究由负责人调度四位研究员、两位多空辩手和一位独立复核员。中英文共用流程，面板记录进度，LangGraph 负责交接质询、补证和定向复审。 Full research uses four researchers, two debaters and an independent reviewer. English and Chinese follow the same workflow with a progress panel and LangGraph debate orchestration.",
         "category": "Finance",
         "capabilities": [
           "Research",
@@ -17,7 +17,8 @@
           "File generation"
         ],
         "defaultPrompt": [
-          "使用 $berkshire-team 以伯克希尔＋AIVA联合模式研究我指定的公司，估值阶段按需调用已链接工具并遵守我的报告顺序；没有公司名时先询问。"
+          "使用 $berkshire-team 以伯克希尔＋AIVA联合模式研究我指定的公司，估值阶段按需调用已链接工具并遵守我的报告顺序；没有公司名时先询问。",
+          "Use $berkshire-team to research my chosen company in English using the joint Berkshire and AIVA workflow. Ask for the company if I haven’t named one."
         ],
         "logo": "./assets/berkshire.svg",
         "composerIcon": "./assets/berkshire.svg"

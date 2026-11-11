@@ -207,6 +207,11 @@ def accept(directory):
         if not isinstance(checks, dict) or any(not isinstance(checks.get(k), str) or not checks[k].strip()
                 for k in ('workflow', 'evidence', 'model', 'scope', 'counterevidence')):
             raise ValueError('review lacks workflow/evidence/model/scope/counterevidence records')
+        if state.get('progress', {}).get('debate_protocol', 0) >= 4:
+            from research_exchange import check_review_judgments
+            dispute_ids = {item['id'] for item in load(contract['challenges'])['disagreements']
+                           if item['material']}
+            check_review_judgments(review, dispute_ids)
         expected = 'LIMITED' if contract.get('limitations') else 'COMPLETE'
         if review.get('decision') != expected:
             raise ValueError('review decision must acknowledge intended delivery scope: ' + expected)

@@ -7,6 +7,7 @@ from research_run import save
 
 SUPPORTED = {'.txt', '.md', '.pdf', '.epub', '.docx'}
 TEXT = {'.txt', '.md'}
+RECORDINGS = {'.wav', '.mp3', '.m4a', '.mp4', '.flac', '.ogg', '.opus', '.webm'}
 
 
 def sha(path):
@@ -20,8 +21,9 @@ def read_library(library):
 
 def register(library, file, title, kind, text_file=None, url=None):
     source = Path(file).resolve()
-    if source.suffix.lower() not in SUPPORTED or not source.is_file():
-        raise ValueError('supply an existing TXT, MD, PDF, EPUB or DOCX file')
+    formats = SUPPORTED | RECORDINGS if kind in {'audio', 'video'} else SUPPORTED
+    if source.suffix.lower() not in formats or not source.is_file():
+        raise ValueError('supply an existing supported document, or a recording with kind audio/video')
     text_path = Path(text_file).resolve() if text_file else source if source.suffix.lower() in TEXT else None
     if text_path and (text_path.suffix.lower() not in TEXT or not text_path.is_file()):
         raise ValueError('extracted text must be an existing UTF-8 TXT/MD file')

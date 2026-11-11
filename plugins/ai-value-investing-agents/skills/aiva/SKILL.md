@@ -1,13 +1,19 @@
 ---
 name: aiva
-description: "显式调用 FernandoAbishai/ai-value-investing-agents 分支的独立研究入口。用户选择AIVA/Fernando分支时使用；完整公司研究默认联合原伯克希尔，显式只用AIVA时路由随包22个原始工作流。"
+description: "Use when the user explicitly requests AIVA or the Fernando edition for investment research. Full company studies default to joint Berkshire mode in English and Chinese. 用户显式选择 AIVA 时使用，完整公司研究默认联合伯克希尔。"
 ---
 
 # Fernando 分支 · 本地 Codex 入口
 
 本插件提供基于上游1.2.0的22个研究技能。以本文件所在目录的上两层为插件根目录；`skills/<名称>/SKILL.md` 是已安装工作流，`skills/<名称>.md` 是上游规范源，`tools/` 为配套工具。先解析真实绝对路径，不要求固定家目录、原始clone位置或其他全局skill。
 
-用户没有公司名时只询问公司；公司明确则执行，不重复请求启动确认。默认中文、美股，工作区AGENTS.md及用户六部分报告顺序优先。不恢复用户暂停的研究，除非本次明确要求恢复该研究。
+用户没有公司名时只询问公司；公司明确则执行，不重复请求启动确认。默认美股，工作区AGENTS.md及用户六部分报告顺序优先。不恢复用户暂停的研究，除非本次明确要求恢复该研究。
+
+## Language and routing / 语言与路由
+
+Use the requested output language or, if unspecified, the language of the request. Determine scope from intent in both languages. Forward the original request, scope and output language to Berkshire Team for joint studies. In AIVA-only mode, apply the same selected workflow, evidence requirements and review criteria in both languages. The local output-language rule takes precedence over language defaults in bundled upstream skills. Retain source quotations verbatim. “Use AIVA to research Mastercard” and「用 AIVA 研究万事达卡」both request a full study. “Use AIVA to recap Mastercard’s earnings” and「用 AIVA 复盘万事达卡财报」both request an earnings recap.
+
+优先按用户指定的语言交付，否则沿用提问语言。中英文均按任务意图选择范围。联合研究把原始请求、范围和输出语言交给伯克希尔团队。显式只用 AIVA 时，两种语言共用对应工作流、取证要求和复核标准。本入口的语言规则优先于随包上游技能的默认输出语言。原文引语保留原语。
 
 ## 完整公司研究默认联合原伯克希尔
 

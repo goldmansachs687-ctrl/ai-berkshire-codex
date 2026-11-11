@@ -23,13 +23,13 @@ class ConfigurationCLI(unittest.TestCase):
     def mutate(self,name,fn):
         p=self.root/name;d=json.loads(p.read_text());fn(d);p.write_text(json.dumps(d))
     def test_multiple_plugin_versions_are_valid(self):
-        data=self.run_check(True);self.assertEqual(data['plugins'],{'berkshire-team':'2.2.9','ai-value-investing-agents':'1.2.1'})
+        data=self.run_check(True);self.assertEqual(data['plugins'],{'berkshire-team':'2.2.13','ai-value-investing-agents':'1.2.2'})
     def test_corrupt_json_fails_real_cli(self):
         (self.root/'plugins/berkshire-team/plugin.json').write_text('{broken');self.run_check(False)
     def test_same_plugin_version_mismatch_fails_real_cli(self):
         self.mutate('plugins/berkshire-team/.codex-plugin/plugin.json',lambda d:d.update(version='9.9.9'));self.run_check(False)
     def test_readme_version_mismatch_fails(self):
-        p=self.root/'README.md';p.write_text(p.read_text().replace('Berkshire Team 2.2.9','Berkshire Team 9.9.9'));self.run_check(False)
+        p=self.root/'README.md';p.write_text(p.read_text().replace('Berkshire Team 2.2.13','Berkshire Team 9.9.9'));self.run_check(False)
     def test_missing_required_field_fails(self):
         self.mutate('plugins/berkshire-team/plugin.json',lambda d:d.pop('description'));self.run_check(False)
     def test_marketplace_path_and_entry_fail(self):

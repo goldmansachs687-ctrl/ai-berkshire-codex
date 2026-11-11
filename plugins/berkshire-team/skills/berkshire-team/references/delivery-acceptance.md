@@ -1,4 +1,4 @@
-# 统一交付验收
+# 统一交付验收（开发版）
 
 先判规则，再执行：
 
@@ -16,7 +16,7 @@
 
 有估值时，manifest 包含非空 `models`、`inputs`、`outputs` 文件列表，`reproduce` 复算说明，`key_inputs`（file/pointer，事实用 claim_id，假设用 rationale）及 `checks`。检查使用受限十进制算术表达式（+ - * / **，整数指数最多100），variables 映射到输入 JSON 的 file/pointer；expected 指向输出 JSON；absolute_tolerance 不得超过 0.000001。不执行模型代码或命令。每个关键输入都必须参与复算检查，历史输入必须匹配经 gate 通过的事实，假设必须在 evidence 中明确登记为 assumption。支持 JSON/CSV/Python 等可审阅文本产物；现有文本模型无需改格式，用 manifest 适配。二进制模型/原件应先导出文本、公式与输入输出，未支持的文件格式会阻断而不会静默放过。检查保证声明范围的算术与输入引用，不能证明模型经济合理性或所有代码路径。
 
-`review.json` 含 reviewer_id、decision（COMPLETE/LIMITED）、非空 checks，逐项覆盖 workflow/evidence/model/scope/counterevidence，及 limitations 中 claim_id 的 acknowledged_limitations。`review.md` 保存具体复核论证。完成实际复核后才运行原 checkpoint 命令；有 delivery.json 时自动扩展必要依赖并记录 SHA-256 清单和研究状态语义摘要。
+`review.json` 含 reviewer_id、decision（COMPLETE/LIMITED）、非空 checks，逐项覆盖 workflow/evidence/model/scope/counterevidence，及 limitations 中 claim_id 的 acknowledged_limitations。自辩论协议 4 起，另按[辩论验收标准](debate-standard.md)写 `debate_judgments`。任一重大争点没有独立判断或被退回修订即阻断交付。`review.md` 保存具体复核论证。完成实际复核后才运行原 checkpoint 命令；有 delivery.json 时自动扩展必要依赖并记录 SHA-256 清单和研究状态语义摘要。
 
 JSON 文件路径相对研究目录，Markdown 链接相对当前 Markdown 文件。允许解析后仍在研究目录内的上级引用，禁止越界及符号链接。Markdown 本地链接和 JSON 的 dependencies、file 引用递归纳入复核。证据的 `source` 使用 HTTP(S) URL 或本地路径。本地来源（含 UTF-8 HTML）绑定文件摘要，缺失或格式不支持时阻断。远程链接只校验结构。文件删除、替换、清单变化或研究角色状态、ID、产物变化均使复核失效。JSON 必须有效、非空且无重复键或非有限数，Python 模型须能解析，CSV 必须有表头与一致列数。run.json 的运行时间戳和交付输出不纳入依赖。保留名称 delivery-result.json 不得作为输入。验收输出只写 stdout，重定向到该名称可重复运行。
 
