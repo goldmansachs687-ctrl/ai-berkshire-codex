@@ -1,6 +1,6 @@
 # American Water Works FY2024 blind test / 美国水务 FY2024 盲评
 
-[English](#english) · [简体中文](#简体中文) · [Back to project / 返回项目](../../README.md)
+[English](#english) · [简体中文](#简体中文) · [Back to project / 返回项目](../../README.md) · [Blind-test comparison / 盲评总表](principle-card-blind-tests.md)
 
 ## English
 
