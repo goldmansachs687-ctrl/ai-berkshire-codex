@@ -29,7 +29,7 @@ English and Chinese requests use the same scope, evidence standards, six-part re
 
 LangGraph dispatches the live debate, waits for both opening cases before sharing them, and forwards each side's original questions after both submit. It can retrieve evidence from registered files and return a specific issue to the original debater for revision. Saved checkpoints support replay and resumption. [Live debate setup](plugins/berkshire-team/skills/berkshire-team/references/langgraph-debate.md)
 
-The local learning workflow records a baseline answer, source reading, teacher feedback, revision, and an independently graded retest. The source material and results stay in your workspace. [Learning workflow](plugins/berkshire-team/skills/berkshire-team/references/langgraph-learning.md)
+The local learning workflow records a baseline answer, source reading, teacher feedback, revision, and an independently graded retest. The source material and results stay in your workspace. [Learning workflow](plugins/berkshire-team/skills/berkshire-team/references/langgraph-learning.md) · [American Water blind test](docs/examples/american-water-blind-test.md)
 
 ## 简体中文
 
@@ -54,7 +54,7 @@ The local learning workflow records a baseline answer, source reading, teacher f
 
 LangGraph 接管正式多空调度，双方交齐开篇后才互看原文，交齐质询后再转发原始问题。它可从已登记文件补证，把复核员退回的具体问题交给原辩手修订，并通过检查点回放或续跑。[正式辩论配置](plugins/berkshire-team/skills/berkshire-team/references/langgraph-debate.md)
 
-本地资料学习流程记录初答、原文阅读、老师批改、修订和独立同题验收。资料和结果保存在你的工作区。[资料学习流程](plugins/berkshire-team/skills/berkshire-team/references/langgraph-learning.md)
+本地资料学习流程记录初答、原文阅读、老师批改、修订和独立同题验收。资料和结果保存在你的工作区。[资料学习流程](plugins/berkshire-team/skills/berkshire-team/references/langgraph-learning.md) · [美国水务盲评](docs/examples/american-water-blind-test.md)
 
 ## Mastercard / 万事达卡
 
