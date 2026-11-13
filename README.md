@@ -1,10 +1,38 @@
 # AI Berkshire · AI 伯克希尔
 
-[English](#english) · [简体中文](#简体中文) · [Mastercard case / 万事达卡案例](#mastercard--万事达卡) · [Install / 安装](#install--安装)
+[Mastercard case / 万事达卡案例](#mastercard--万事达卡) · [English](#english) · [简体中文](#简体中文) · [Install / 安装](#install--安装)
 
 **From how a company makes money to what would change your valuation.**
 
 **从公司怎么赚钱，到哪些证据会改变估值。**
+
+## Mastercard / 万事达卡
+
+**Can public evidence support slower growth in Mastercard’s services business?** Berkshire Team tests the two sides’ claims against the evidence and reruns the DCF with one assumption changed at a time.
+
+**公开证据支持下调万事达卡增值服务的增长预期吗？** 伯克希尔团队核对多空双方的依据，每次只改一项假设，再复算现金流折现估值（DCF）。
+
+| Bull/bear challenge / 多空质询 | Base → stress DCF (USD/share) / 基准 → 压力估值（美元/股） |
+|---|---:|
+| **Services growth / 增值服务增速。** The bull asked what disclosures supported 11% first-year services net revenue growth. The bear found no direct evidence for that slowdown and asked how 15% growth would translate into cash. The team kept 15% as a conditional revenue base, tested 11%, and tracked cash conversion separately.<br>多方追问，哪些披露支持把首年增值服务净收入增速降到 11%？空方承认缺少直接证据，并反问 15% 的增长如何兑现为现金。团队有条件保留 15% 的收入基准，测试 11%，并单独跟踪现金兑现。 | 15% → 11%<br>**$468.28 → $460.46** |
+| **Network rebates / 网络返利率。** The bull questioned whether Capital One’s partial migration justified a 57% global rebate rate in year five. The bear agreed the local evidence could not support that extrapolation. The team kept 54.5% as its base and tested 57% with volume held fixed.<br>多方追问，Capital One 局部迁移能否支持第五年全球返利率升至 57%？空方承认局部证据不足以外推。团队保留 54.5% 的基准，并在交易量不变的条件下测试 57%。 | 54.5% → 57%<br>**$468.28 → $465.67** |
+
+![Mastercard dashboard during bull/bear cross-examination / 万事达卡多空质询阶段的研究进度面板](docs/examples/mastercard-progress.png)
+
+This replay shows cross-examination at **20:17:33 Hong Kong time on 10 November 2026**, after both sides submitted their opening cases. The local run used Berkshire Team **2.2.8** and recorded 27 events.
+
+截图回放 **2026 年 11 月 10 日香港时间 20:17:33** 的质询阶段，当时多空双方已提交开篇。这次本地研究使用伯克希尔团队 **2.2.8**，共记录 27 条事件。
+
+```mermaid
+flowchart LR
+    A["20:02 · Independent research<br/>独立取证"] --> B["20:14 · Bull and bear debate<br/>多空交锋"]
+    B --> C["20:21 · Independent review<br/>独立复核"]
+    C --> D["20:26 · Limited delivery<br/>附限制交付"]
+```
+
+The reviewer checked 13 groups of facts and independently recomputed 438 calculations, all of which passed. Mastercard did not disclose a standalone services operating margin, so the reviewer marked the delivery **LIMITED** to a conditional group-level valuation.
+
+独立复核员抽查了 13 组事实，独立复算 438 项，全部通过。万事达卡未披露增值服务的独立营业利润率，交付因此判为 **LIMITED（附限制可用）**，适用于集团层面的条件估值。
 
 ## English
 
@@ -55,35 +83,6 @@ The local learning workflow records a baseline answer, source reading, teacher f
 LangGraph 接管正式多空调度，双方交齐开篇后才互看原文，交齐质询后再转发原始问题。它可从已登记文件补证，把复核员退回的具体问题交给原辩手修订，并通过检查点回放或续跑。[正式辩论配置](plugins/berkshire-team/skills/berkshire-team/references/langgraph-debate.md)
 
 本地资料学习流程记录初答、原文阅读、老师批改、修订和独立同题验收。资料和结果保存在你的工作区。[资料学习流程](plugins/berkshire-team/skills/berkshire-team/references/langgraph-learning.md) · [美国水务盲评](docs/examples/american-water-blind-test.md) · [盲评总表](docs/examples/principle-card-blind-tests.md)
-
-## Mastercard / 万事达卡
-
-This completed local run used version 2.2.8 of Berkshire Team on **10 November 2026**, Hong Kong time. The panel recorded 27 events. The screenshot replays cross-examination at **20:17:33**, after both opening cases were filed and before independent review.
-
-这轮实跑于 **2026 年 11 月 10 日**在本地 2.2.8 完成，时间均为香港时间。面板记录了 27 条事件。截图回放 **20:17:33** 的质询阶段，当时双方已提交开篇，独立复核尚未开始。
-
-```mermaid
-flowchart LR
-    A["20:02 · Independent research<br/>独立取证"] --> B["20:14 · Bull and bear debate<br/>多空交锋"]
-    B --> C["20:21 · Independent review<br/>独立复核"]
-    C --> D["20:26 · Limited delivery<br/>附限制交付"]
-```
-
-<details>
-<summary>See the research dashboard / 展开研究面板</summary>
-
-![Mastercard dashboard replay at cross-examination / 万事达卡多空质询阶段的研究面板回放](docs/examples/mastercard-progress.png)
-
-</details>
-
-| What changed in debate / 质询后怎么改判 | Base → stress DCF (USD/share) / 基准至压力估值（美元/股） |
-|---|---:|
-| **Year-five network rebate rate / 第五年网络返利率.** Capital One's partial migration did not support a global rebate rate of 57%. Apple Card contract terms were unavailable, so the test held volume fixed. / Capital One 局部交易迁移不足以支持全球返利率升至 57%。Apple Card 合同条款未知，测试保持交易量不变。 | 54.5% → 57%<br/>$468.28 → $465.67 |
-| **Year-one value-added services net revenue growth / 首年增值服务净收入增速.** The bear found insufficient product or customer disclosure for 11%. The team kept 15% as a conditional base and tracked cash conversion separately. / 产品与客户披露不足以支持 11%。团队有条件保留 15% 基准，另行跟踪现金兑现。 | 15% → 11%<br/>$468.28 → $460.46 |
-
-The reviewer checked 13 groups of facts and independently recomputed 438 calculations, all of which passed. The result was **LIMITED** to a group-level conditional valuation because the standalone services margin was unavailable.
-
-复核员抽查 13 组事实，独立复算 438 项，全部通过。因缺少增值服务独立利润率，交付判为 **LIMITED（附限制可用）**，适用于集团层面的条件估值。
 
 ## Install / 安装
 
