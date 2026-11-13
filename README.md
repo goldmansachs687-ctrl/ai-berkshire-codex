@@ -34,6 +34,12 @@ The reviewer checked 13 groups of facts and independently recomputed 438 calcula
 
 独立复核员抽查了 13 组事实，独立复算 438 项，全部通过。万事达卡未披露增值服务的独立营业利润率，交付因此判为 **LIMITED（附限制可用）**，适用于集团层面的条件估值。
 
+## Reading to research / 书里的原则怎么用进研报
+
+See how *The Intelligent Investor*, *Valuation* and *Financial Shenanigans* inform the plugin’s research rules. The guide lists the passages read and walks through calculations for price versus value, reinvestment and cash flow quality. [Reading guide](docs/reading-to-research.md#english) · [American Water blind test](docs/examples/american-water-blind-test.md#english)
+
+看《聪明的投资者》《估值》和《财务诡计》怎样写进插件的研究规则。导读列出实际读过的选段，并演示如何复算价格与价值的差距、再投资需求及现金流质量。[中文导读](docs/reading-to-research.md#简体中文) · [美国水务盲评](docs/examples/american-water-blind-test.md#简体中文)
+
 ## English
 
 **Berkshire Team 2.2.13** runs fundamental company research in Codex. Four researchers independently cover business and moat, financials and valuation, industry and competition, and management and risk. Two debaters test the investment case. A separate reviewer checks the evidence, model, and strongest counterargument. **AI Value Investing Agents (AIVA) 1.2.2** adds analytical and writing guidance within the same team when enabled. Berkshire Library indexes investment materials in your workspace.
