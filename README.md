@@ -1,6 +1,6 @@
 # AI Berkshire · AI 伯克希尔
 
-[Mastercard case / 万事达卡案例](#mastercard--万事达卡) · [English](#english) · [简体中文](#简体中文) · [Install / 安装](#install--安装)
+[Mastercard case / 万事达卡案例](#mastercard--万事达卡) · [Alphabet report / 谷歌研报](#alphabet--谷歌) · [English](#english) · [简体中文](#简体中文) · [Install / 安装](#install--安装)
 
 **From how a company makes money to what would change your valuation.**
 
@@ -39,6 +39,12 @@ The reviewer checked 13 groups of facts and independently recomputed 438 calcula
 See how *The Intelligent Investor*, *Valuation* and *Financial Shenanigans* inform the plugin’s research rules. The guide lists the passages read and walks through calculations for price versus value, reinvestment and cash flow quality. [Reading guide](docs/reading-to-research.md#english) · [American Water blind test](docs/examples/american-water-blind-test.md#english)
 
 看《聪明的投资者》《估值》和《财务诡计》怎样写进插件的研究规则。导读列出实际读过的选段，并演示如何复算价格与价值的差距、再投资需求及现金流质量。[中文导读](docs/reading-to-research.md#简体中文) · [美国水务盲评](docs/examples/american-water-blind-test.md#简体中文)
+
+## Alphabet / 谷歌
+
+**How much cash does AI and Cloud growth leave for common shareholders?** The report follows Search, YouTube and Cloud, reconstructs ten years of financials, and shows how the bull/bear exchange changes two valuation sensitivities. [English PDF](docs/examples/alphabet-research-en.pdf) · [Worked example](docs/examples/alphabet-research.md#english)
+
+**AI 和 Cloud 增长能为普通股股东留下多少现金？** 研报拆解搜索、YouTube 和 Cloud，整理十年财务，并展示多空质询后怎样复算两项估值敏感性。[中文 PDF](docs/examples/alphabet-research-zh-CN.pdf) · [可复算示例](docs/examples/alphabet-research.md#简体中文)
 
 ## English
 
